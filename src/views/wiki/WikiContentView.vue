@@ -110,7 +110,7 @@ export default {
 <style lang="scss" scoped>
 .content {
   flex: 1;
-  background-color: #FFF;
+  background-color: var(--wiki-content-background-color);
   padding: 0 .1rem 0 .1rem;
 }
 </style>

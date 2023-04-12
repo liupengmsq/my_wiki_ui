@@ -24,17 +24,17 @@ export default {
     }
 
     return {
-      isVisible, 
-      open, 
+      isVisible,
+      open,
       close
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mask {
-  // 设置整个对话框外的蒙层效果
+  /* 设置整个对话框外的蒙层效果 */
   z-index: 1;
   position: fixed;
   top: 0;
@@ -43,14 +43,14 @@ export default {
   width: 100%;
   overflow-x: hidden;
   background: rgba(0, 0, 0, 0.50);
+}
 
-  &__content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -200%);
-    width: 3rem;
-    background: #FFF;
-  }
+.mask__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -200%);
+  width: 3rem;
+  background: var(--body-backgroud-color);
 }
 </style>

@@ -180,7 +180,7 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -100%);
-    background: #FFF;
+    background: var(--dialog-backgroud-color);
     border-radius: .04rem;
     width: 5rem;
 
@@ -188,8 +188,7 @@ export default {
     margin: .24rem 0 0 0;
     line-height: .26rem;
     font-size: .18rem;
-    ;
-    color: #333;
+    color: var(--dialog-title-color);
     text-align: center;
   }
 
@@ -219,7 +218,7 @@ export default {
     }
 
     &__input {
-      width: 100%;
+      width: 93%;
       margin-bottom: 20px;
       padding: 12px;
       border: 1px solid #ccc;
@@ -241,8 +240,8 @@ export default {
 
       &--first {
         margin-right: .12rem;
-        background-color: #4FB0F9;
-        color: #FFF;
+        background-color: var(--dialog-confirm-button-background-color);
+        color: var(--dialog-confirm-button-color);
         transition-duration: 0.2s;
       }
       &--first:hover {
@@ -252,8 +251,8 @@ export default {
       &--last {
         margin-left: .12rem;
         border: .01rem solid #4FB0F9;
-        background-color: #FFF;
-        color: #4FB0F9;
+        background-color: var(--dialog-cancel-button-background-color);
+        color: var(--dialog-cancel-button-color);
         transition-duration: 0.2s;
       }
       &--last:hover {

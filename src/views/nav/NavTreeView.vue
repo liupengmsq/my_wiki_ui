@@ -290,7 +290,7 @@ export default {
 <style lang="scss">
 // 这里的css不能使用scoped局部样式, 因为我们要应用到raw html上
 .nav_container {
-  background-color: #FFF;
+  background-color: var(--nav-container-background-color);
   border-right: 1px solid #dddddd;
 }
 .nav {
@@ -301,8 +301,8 @@ export default {
   box-sizing: border-box;
 }
 .nav-selected {
-  background: #00a8e6 !important;
-  color: #fff !important;
+  background: var(--nav-selected-background-color) !important;
+  color: var(--nav-selected-color) !important;
 }
 .manage_button {
   margin: .01rem 0 .01rem .05rem;
