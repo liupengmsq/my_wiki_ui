@@ -111,7 +111,8 @@ export default {
 .content {
   flex: 1;
   background-color: var(--wiki-content-background-color);
-  padding: 0 .1rem 0 .1rem;
+  padding: .1rem .1rem .1rem .1rem;
+  border-radius: 0 5px 5px 0;
 }
 </style>
     

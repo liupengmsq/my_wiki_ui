@@ -3,7 +3,7 @@
     <div class="content__title">{{ title }} </div>
     <p class="content__desc"> {{ message }} </p>
     <div class="content__btns">
-      <div class="content__btns__btn content__btns__btn--first" @click="confirm">{{ okButton }}</div> 
+      <div class="content__btns__btn content__btns__btn--first" @click="confirm">{{ okButton }}</div>
       <div class="content__btns__btn content__btns__btn--last" @click="cancel">{{ cancelButton }}</div>
     </div>
   </base-dialog>
@@ -52,17 +52,17 @@ export default {
       baseDialog.value.open();
       // Return promise so the caller can get results
       return new Promise((resolve, reject) => {
-        returnMethods.resolvePromise= resolve
+        returnMethods.resolvePromise = resolve
         returnMethods.rejectPromise = reject
       })
     }
 
-    const confirm = async ()=> {
+    const confirm = async () => {
       try {
         const ret = await returnMethods.onClickOKButton();
         baseDialog.value.close();
         returnMethods.resolvePromise(ret);
-      } catch(error) {
+      } catch (error) {
         console.error(error);
         baseDialog.value.close();
         returnMethods.rejectPromise(error);
@@ -94,17 +94,17 @@ export default {
   margin: .24rem 0 0 0;
   line-height: .26rem;
   font-size: .18rem;
-  ;
-  color: #333;
+  color: var(--dialog-title-color);
   text-align: center;
 }
+
 .content__desc {
   margin: .08rem 0 0 0;
   font-size: .14rem;
-  ;
-  color: #666;
+  color: var(--dialog-desc-color);
   text-align: center;
 }
+
 .content__btns {
   display: flex;
   margin: .24rem .58rem;
@@ -119,9 +119,10 @@ export default {
 
     &--first {
       margin-right: .12rem;
-      background-color: #4FB0F9;
-      color: #FFF;
+      background-color: var(--dialog-confirm-button-background-color);
+      color: var(--dialog-confirm-button-color);
     }
+
     &--first:hover {
       background-color: #1c98f7;
     }
@@ -129,12 +130,13 @@ export default {
     &--last {
       margin-left: .12rem;
       border: .01rem solid #4FB0F9;
-      background-color: #FFF;
+      background-color: var(--dialog-cancel-button-background-color);
+      color: var(--dialog-cancel-button-color);
       color: #4FB0F9;
     }
+
     &--last:hover {
       color: #0091ff;
     }
   }
-}
-</style>
+}</style>

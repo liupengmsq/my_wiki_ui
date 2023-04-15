@@ -41,6 +41,7 @@ export default {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding-top: .2rem;
   padding-bottom: .5rem;
 }
 </style>

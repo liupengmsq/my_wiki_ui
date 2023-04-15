@@ -292,6 +292,9 @@ export default {
 .nav_container {
   background-color: var(--nav-container-background-color);
   border-right: 1px solid #dddddd;
+  border-radius: 5px 0 0 5px;
+  padding-top: .1rem;
+  padding-bottom: .1rem;
 }
 .nav {
   font-size: .16rem;

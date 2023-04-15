@@ -81,7 +81,7 @@ export default {
     float: left;
     top: .4rem;
     left: .2rem;
-    color: #333;
+    color: var(--dialog-sccess-icon-color);
     font-size: .5rem;
   }
 
@@ -99,14 +99,14 @@ export default {
   margin: .24rem 0 0 0;
   line-height: .26rem;
   font-size: .18rem;
-  color: #333;
+  color: var(--dialog-title-color);
   text-align: center;
 }
 
 .content__desc {
   margin: 0.08rem 0.1rem 0.08rem 0.1rem;
   font-size: .14rem;
-  color: #666;
+  color: var(--dialog-desc-color);
   text-align: center;
   word-break: normal;
   white-space: normal;
@@ -124,8 +124,8 @@ export default {
     text-align: center;
 
     &--last {
-      background-color: #4FB0F9;
-      color: #FFF;
+      background-color: var(--dialog-confirm-button-background-color);
+      color: var(--dialog-confirm-button-color);
     }
 
     &--last:hover {
