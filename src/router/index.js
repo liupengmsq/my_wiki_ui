@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import * as nav_util from '../utils/nav';
+import { defineAsyncComponent } from "vue"
 
 const routes = [
   {
@@ -11,17 +12,17 @@ const routes = [
   {
     path: '/wiki',
     name: 'wikiMainView',
-    component: () => import(/* webpackChunkName: "wiki" */ '../views/wiki/WikiMainView.vue')
+    component: defineAsyncComponent(() => import('../views/wiki/WikiMainView.vue'))
   },
   {
     path: '/markdown',
     name: 'markdown',
-    component: () => import(/* webpackChunkName: "markdown" */ '../views/wiki/MarkdownEditorView.vue')
+    component: defineAsyncComponent(() => import('../views/wiki/MarkdownEditorView.vue'))
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes
 })
 

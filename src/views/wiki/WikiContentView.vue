@@ -12,6 +12,8 @@ import { onMounted, reactive } from 'vue';
 import { get } from '../../utils/request';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
+import light from 'highlight.js/styles/github.css?url'
+import dark from 'highlight.js/styles/dark.css?url'
 
 export default {
   name: 'WikiContentView',
@@ -23,18 +25,18 @@ export default {
       if (document.documentElement.classList.contains("light")) {
         document.documentElement.classList.remove("light")
         document.documentElement.classList.add("dark")
-        theme.setAttribute('href', '../node_modules/highlight.js/styles/dark.css');
+        theme.setAttribute('href', dark);
       } else if (document.documentElement.classList.contains("dark")) {
         document.documentElement.classList.remove("dark")
         document.documentElement.classList.add("light")
-        theme.setAttribute('href', '../node_modules/highlight.js/styles/github.css');
+        theme.setAttribute('href', light);
       } else {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
           document.documentElement.classList.add("dark")
-          theme.setAttribute('href', '../node_modules/highlight.js/styles/dark.css');
+          theme.setAttribute('href', dark);
         } else {
           document.documentElement.classList.add("light")
-          theme.setAttribute('href', '../node_modules/highlight.js/styles/github.css');
+          theme.setAttribute('href', light);
         }
       }
     }
@@ -46,6 +48,7 @@ export default {
     });
 
     onMounted(() => {
+      console.log('dark', dark);
       console.log('route.query.id', route.query.id);
       marked.options({
         highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
@@ -62,10 +65,10 @@ export default {
       var theme = document.getElementById('theme');
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add("dark")
-        theme.setAttribute('href', '../node_modules/highlight.js/styles/dark.css');
+        theme.setAttribute('href', dark);
       } else {
         document.documentElement.classList.add("light")
-        theme.setAttribute('href', '../node_modules/highlight.js/styles/github.css');
+        theme.setAttribute('href', light);
       }
 
       // MediaQueryList
@@ -86,7 +89,7 @@ export default {
       var theme = document.getElementById('theme');
       document.documentElement.classList.remove("light")
       document.documentElement.classList.add("dark")
-      theme.setAttribute('href', '../node_modules/highlight.js/styles/dark.css');
+      theme.setAttribute('href', dark);
     }
 
     const activateLightMode = () => {
@@ -94,7 +97,7 @@ export default {
       var theme = document.getElementById('theme');
       document.documentElement.classList.remove("dark")
       document.documentElement.classList.add("light")
-      theme.setAttribute('href', '../node_modules/highlight.js/styles/github.css');
+      theme.setAttribute('href', light);
     }
 
 
