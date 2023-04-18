@@ -1,6 +1,33 @@
 <template>
     <div class="wrapper">
       <div class="main">
+        <div class="images">
+          <div class="image_item">
+            <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+              <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+            </a>
+          </div>
+          <div class="image_item">
+            <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+              <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+            </a>
+          </div>
+          <div class="image_item">
+            <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+              <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+            </a>
+          </div>
+          <div class="image_item">
+            <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+              <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+            </a>
+          </div>
+          <div class="image_item">
+            <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+              <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+            </a>
+          </div>
+        </div>
         <div id="content" class="content">
           <h1>Markdown编辑器</h1>
           <textarea class="mk-editor" v-model="markdown"></textarea>
@@ -39,7 +66,23 @@
   }
   </script>
 
-<style lang="scss">
+<style scoped>
+.main {
+  display: flex;
+  /* max-width: 1760px; */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: .2rem;
+  padding-bottom: .5rem;
+}
+
+.images {
+  /* height: 10rem; */
+  height: 90vh;
+  overflow-y: scroll;
+}
+
 .mk-editor {
   width: 15rem;
   height: 5rem;
