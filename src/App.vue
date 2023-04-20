@@ -3,7 +3,8 @@
     <nav class="top-nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/wiki">Wiki</router-link> |
-      <router-link to="/markdown">Markdown</router-link>
+      <router-link to="/markdown">Markdown</router-link> |
+      <router-link to="/markdownEditorPlugin">Markdown Editor</router-link>
       <input type="button" value="更换主题" @click="switchTheme" />
     </nav>
   </div>

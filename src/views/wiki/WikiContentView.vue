@@ -53,5 +53,6 @@ export default {
   padding: .1rem .1rem .1rem .1rem;
   border-radius: 0 5px 5px 0;
 }
+
 </style>
     

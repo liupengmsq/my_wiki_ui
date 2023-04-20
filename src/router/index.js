@@ -18,6 +18,11 @@ const routes = [
     path: '/markdown',
     name: 'markdown',
     component: defineAsyncComponent(() => import('../views/wiki/MarkdownEditorView.vue'))
+  },
+  {
+    path: '/markdownEditorPlugin',
+    name: 'markdownEditorPlugin',
+    component: defineAsyncComponent(() => import('../views/wiki/MarkdownPluginEditorView.vue'))
   }
 ]
 

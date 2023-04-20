@@ -64,23 +64,14 @@
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">
-      <div class="container__top">
-        <h1 class="mk-editor-title">Markdown编辑器</h1>
-        <textarea class="mk-editor" v-model="markdown"></textarea>
-      </div>
-      <div class="resizer" data-direction="vertical"></div>
-      <div class="container__bottom">
-        <h1 class="mk-preview-title">预览</h1>
-        <div class="mk-preview" v-html="markdownToHtml"></div>
-      </div>
+      <h1 class="mk-editor-title">Markdown编辑器</h1>
+      <v-md-editor class="md-editor" v-model="markdown" mode="editor"></v-md-editor>
     </div>
   </div>
 </template>
   
 <script>
-import { computed, ref, onMounted } from 'vue';
-import { marked } from 'marked';
-import hljs from 'highlight.js';
+import { ref, onMounted } from 'vue';
 
 export default {
   name: 'MarkdownEditorView',
@@ -88,10 +79,6 @@ export default {
   setup() {
     // markdown解析
     const markdown = ref("");
-    marked.options({
-      highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
-    })
-    const markdownToHtml = computed(() => marked(markdown.value));
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -203,8 +190,7 @@ export default {
     });
 
     return {
-      markdown,
-      markdownToHtml,
+      markdown
     }
   }
 }
@@ -222,7 +208,7 @@ export default {
   /* display: flex; */
 
   /* Initially, the left takes 1/4 width */
-  width: 25%;
+  width: 20%;
 
   align-items: center;
   justify-content: center;
@@ -232,36 +218,14 @@ export default {
 }
 
 .container__right {
-  display: flex;
+  /* display: flex; */
   /* Take the remaining width */
   flex: 1;
 
-  align-items: stretch;
+  /* align-items: stretch; */
   flex-direction: column;
   justify-content: center;
   overflow-x: scroll;
-}
-
-.container__top {
-  /* display: flex; */
-
-  /* Initial height */
-  /* height: 12rem; */
-
-  align-items: center;
-  justify-content: center;
-  overflow-y: scroll;
-}
-
-.container__bottom {
-  /* display: flex; */
-
-  /* Take the remaining height */
-  flex: 1;
-
-  align-items: center;
-  justify-content: center;
-  overflow-y: scroll;
 }
 
 .resizer[data-direction='horizontal'] {
@@ -282,37 +246,19 @@ export default {
   margin-left: 0.1rem;
   margin-right: auto;
 }
-.mk-editor {
-  width: 12.54rem;
-  height: 4.62rem;
+
+.v-md-editor--editor {
+  width: 100%;
+  height: 10.9rem;
   overflow-x: scroll;
   overflow-y: scroll;
   resize: both;
-  margin-left: 0.1rem;
-  margin-right: auto;
-  padding: .2rem;
-  line-height: 1.5;
-  border-radius: .05rem;
-  box-shadow: .01rem .01rem .01rem #999;
+  /* background-color: blue; */
 }
 
-.mk-preview-title {
-  margin-left: 0.1rem;
-  margin-right: auto;
+.md-editor >>> .v-md-textarea-editor {
+  background-color: blue;
 }
 
-.mk-preview {
-  width: 12.54rem;
-  height: 4.62rem;
-  overflow-x: scroll;
-  overflow-y: scroll;
-  resize: both;
-  margin-left: 0.1rem;
-  margin-right: auto;
-  border: 1px solid #cbd5e0;
-  padding: .2rem;
-  border-radius: .05rem;
-  box-shadow: .01rem .01rem .01rem #999;
-}
 </style>
   

@@ -133,3 +133,21 @@ input[type=text] {
 pre {
   background-color: var(--pre-background-color);
 }
+
+// markdown editor的背景色
+.v-md-textarea-editor pre, .v-md-textarea-editor textarea {
+  background-color: var(--pre-background-color);
+}
+.v-md-editor__editor-wrapper, .v-md-editor__preview-wrapper {
+  background-color: var(--pre-background-color);
+}
+
+// markdown editor的文字的颜色
+#app .v-md-textarea-editor pre, #app .v-md-textarea-editor textarea {
+  color: var(--body-color);
+}
+
+// WikiContentView.vue中图片的大小
+#content a > img {
+  width: 100%;
+}
