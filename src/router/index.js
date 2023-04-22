@@ -12,17 +12,17 @@ const routes = [
   {
     path: '/wiki',
     name: 'wikiMainView',
-    component: defineAsyncComponent(() => import('../views/wiki/WikiMainView.vue'))
+    component: () => import('../views/wiki/WikiMainView.vue')
   },
   {
     path: '/markdown',
     name: 'markdown',
-    component: defineAsyncComponent(() => import('../views/wiki/MarkdownEditorView.vue'))
+    component: () => import('../views/wiki/MarkdownEditorView.vue')
   },
   {
     path: '/markdownEditorPlugin',
     name: 'markdownEditorPlugin',
-    component: defineAsyncComponent(() => import('../views/wiki/MarkdownPluginEditorView.vue'))
+    component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
   }
 ]
 

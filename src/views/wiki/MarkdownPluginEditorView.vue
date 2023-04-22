@@ -2,70 +2,95 @@
   <div class="container">
     <div class="container__left">
       <div class="image_item">
+        <div>文件名: 1.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img id="drag1" draggable="true"  @dragstart="drag" src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
+        </a>
+      </div>
+
+      <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
+        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
       <div class="image_item">
+        <div>文件名: 123123.png</div>
+        <div>时间: 2023-03-03 09:01:21</div>
         <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
+          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
         </a>
       </div>
     </div>
     <div class="resizer" data-direction="horizontal"></div>
-    <div class="container__right">
+    <div class="container__right" @drop="drop" @dragover="allowDrop">
       <h1 class="mk-editor-title">Markdown编辑器</h1>
-      <v-md-editor class="md-editor" v-model="markdown" mode="editor"></v-md-editor>
+      <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor"></v-md-editor>
     </div>
   </div>
 </template>
@@ -79,6 +104,9 @@ export default {
   setup() {
     // markdown解析
     const markdown = ref("");
+
+    // 引用编辑器组件的对象
+    const editor = ref(null);
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -189,8 +217,52 @@ export default {
       });
     });
 
+    // 左侧图片拖动到编辑区的功能实现
+    const allowDrop = (ev) => {
+      ev.preventDefault();
+    }
+
+    // 左侧图片拖动到编辑区的功能实现
+    const drag = (ev) => {
+      console.log('dragging...', ev);
+      ev.dataTransfer.setData("text", ev.target.id);
+      ev.dataTransfer.setData("image_url", ev.target.src);
+    }
+
+    // 左侧图片拖动到编辑区的功能实现
+    const drop = (ev) => {
+      console.log('dropping...', ev);
+      ev.preventDefault();
+      const imageUrl = ev.dataTransfer.getData("image_url");
+      insertEditor(imageUrl);
+    }
+
+    // 左侧图片拖动到编辑区的功能实现
+    const insertEditor = (imageURL) => {
+      editor.value.insert((selected) => {
+
+        const imageTitle = selected || '';
+        const content = `
+<a href="${imageURL}" target="_blank"/>
+  <img src="${imageURL}" title="${imageTitle}">
+</a>
+`
+
+        return {
+          // 要插入的文本
+          text: content,
+          // 插入后要选中的文本
+          selected: content,
+        };
+      });
+    }
+
     return {
-      markdown
+      markdown,
+      editor,
+      allowDrop,
+      drag,
+      drop
     }
   }
 }
@@ -247,18 +319,19 @@ export default {
   margin-right: auto;
 }
 
-.v-md-editor--editor {
+.image_item {
+  text-align: left;
+}
+
+.image_item img {
   width: 100%;
-  height: 10.9rem;
-  overflow-x: scroll;
-  overflow-y: scroll;
-  resize: both;
-  /* background-color: blue; */
 }
 
-.md-editor >>> .v-md-textarea-editor {
-  background-color: blue;
+#div1 {
+  width: 350px;
+  height: 70px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
 }
-
 </style>
   

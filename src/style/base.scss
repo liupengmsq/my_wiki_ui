@@ -145,9 +145,14 @@ pre {
 // markdown editor的文字的颜色
 #app .v-md-textarea-editor pre, #app .v-md-textarea-editor textarea {
   color: var(--body-color);
+  font-size: .18rem;
 }
 
 // WikiContentView.vue中图片的大小
 #content a > img {
+  width: 100%;
+}
+
+#app .v-md-editor-preview img {
   width: 100%;
 }
