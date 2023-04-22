@@ -1,90 +1,14 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <div class="image_item">
-        <div>文件名: 1.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img id="drag1" draggable="true"  @dragstart="drag" src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
+      <input type="button" value="refresh" @click="getImageList">
+      <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
+        <div>文件名: {{ imgItem.fileName }}</div>
+        <div>时间: {{ imgItem.uploadTime }}</div>
+        <a :href="'http://imgs.pengliu.me:8080/' + imgItem.fileName" target="_blank">
+          <img id="drag1" draggable="true" @dragstart="drag" :src="'http://imgs.pengliu.me:8080/' + imgItem.fileName">
         </a>
-      </div>
-
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
-      </div>
-      <div class="image_item">
-        <div>文件名: 123123.png</div>
-        <div>时间: 2023-03-03 09:01:21</div>
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题">
-        </a>
+        <input type="button" value="删除" @click="deleteImage(imgItem.fileName)">
       </div>
     </div>
     <div class="resizer" data-direction="horizontal"></div>
@@ -96,7 +20,8 @@
 </template>
   
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
+import { get, deleteAPI } from '../../utils/request';
 
 export default {
   name: 'MarkdownEditorView',
@@ -107,6 +32,10 @@ export default {
 
     // 引用编辑器组件的对象
     const editor = ref(null);
+
+    const imageData = reactive({
+      list: []
+    });
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -211,11 +140,22 @@ export default {
         resizer.addEventListener('mousedown', mouseDownHandler);
       };
 
-      // Query all resizers
+      // 使所有的分割div可拖动
       document.querySelectorAll('.resizer').forEach(function (ele) {
         resizable(ele);
       });
+
+      get('/api/wiki/image').then(response => {
+        console.log('GET /api/wiki/image', response);
+        if (response.Success) {
+          imageData.list = response.Result;
+        }
+      });
+
+      console.log('imageData.list', imageData.list);
     });
+
+
 
     // 左侧图片拖动到编辑区的功能实现
     const allowDrop = (ev) => {
@@ -247,7 +187,6 @@ export default {
   <img src="${imageURL}" title="${imageTitle}">
 </a>
 `
-
         return {
           // 要插入的文本
           text: content,
@@ -257,12 +196,45 @@ export default {
       });
     }
 
+    // 从后端api获取图片列表
+    const getImageList = () => {
+      get('/api/wiki/image').then(response => {
+        console.log('GET /api/wiki/image', response);
+        if (response.Success) {
+          imageData.list = response.Result;
+        } else {
+          console.error('Error when GET for /api/wiki/image', response);
+        }
+      }).catch(error => {
+        console.error('Error when GET for /api/wiki/image', error);
+      });
+    }
+
+    // 调用后端api删除图片
+    const deleteImage = (fileName) => {
+      console.log('Image file name to be deleted:', fileName);
+      deleteAPI('/api/wiki/image/' + fileName).then(response => {
+        if (response.Success) {
+          // refresh image list after deletion
+          getImageList();
+        } else {
+          console.error('Error when Delete for /api/wiki/image', response);
+        }
+      }).catch(error => {
+        console.error('Error when Delete for /api/wiki/image', error);
+      });
+
+    }
+
     return {
       markdown,
       editor,
       allowDrop,
       drag,
-      drop
+      drop,
+      imageData,
+      getImageList,
+      deleteImage
     }
   }
 }
@@ -321,6 +293,13 @@ export default {
 
 .image_item {
   text-align: left;
+  margin-bottom: .1rem;
+  padding: .1rem;
+  border: .01rem solid #aaaaaa;
+}
+
+.image_item:hover {
+  border: .05rem solid red;
 }
 
 .image_item img {
