@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <input type="button" value="refresh" @click="getImageList">
+      <input id="fileUpload" type="file" name="filename">
+      <input type="button" value="上传" @click="uploadImage">
+      <input type="button" value="刷新列表" @click="getImageList">
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
         <div>文件名: {{ imgItem.fileName }}</div>
         <div>时间: {{ imgItem.uploadTime }}</div>
@@ -21,7 +23,7 @@
   
 <script>
 import { ref, onMounted, reactive } from 'vue';
-import { get, deleteAPI } from '../../utils/request';
+import { get, deleteAPI, postForm } from '../../utils/request';
 
 export default {
   name: 'MarkdownEditorView',
@@ -197,33 +199,49 @@ export default {
     }
 
     // 从后端api获取图片列表
-    const getImageList = () => {
-      get('/api/wiki/image').then(response => {
+    const getImageList = async () => {
+      try {
+        const response = await get('/api/wiki/image');
         console.log('GET /api/wiki/image', response);
         if (response.Success) {
           imageData.list = response.Result;
         } else {
           console.error('Error when GET for /api/wiki/image', response);
         }
-      }).catch(error => {
+      } catch (error) {
         console.error('Error when GET for /api/wiki/image', error);
-      });
+      }
     }
 
     // 调用后端api删除图片
-    const deleteImage = (fileName) => {
+    const deleteImage = async (fileName) => {
       console.log('Image file name to be deleted:', fileName);
-      deleteAPI('/api/wiki/image/' + fileName).then(response => {
+      try {
+        const response = await deleteAPI('/api/wiki/image/' + fileName);
         if (response.Success) {
           // refresh image list after deletion
           getImageList();
         } else {
           console.error('Error when Delete for /api/wiki/image', response);
         }
-      }).catch(error => {
+      } catch (error) {
         console.error('Error when Delete for /api/wiki/image', error);
-      });
+      }
+    }
 
+    const uploadImage = async () => {
+      console.log('fileUpload', document.querySelector('#fileUpload').files[0]);
+      try {
+        const response = await postForm('/api/wiki/image', document.querySelector('#fileUpload').files[0]);
+        if (response.Success) {
+          console.log('Response from upload image', response);
+        } else {
+          console.error('Error when uploading image', error);
+        }
+      } catch (error) {
+        console.error('Error when uploading image', error);
+      }
+      getImageList();
     }
 
     return {
@@ -234,7 +252,8 @@ export default {
       drop,
       imageData,
       getImageList,
-      deleteImage
+      deleteImage,
+      uploadImage
     }
   }
 }
