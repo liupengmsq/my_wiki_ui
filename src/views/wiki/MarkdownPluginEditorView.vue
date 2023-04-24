@@ -1,9 +1,14 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <input id="fileUpload" type="file" name="filename">
-      <input type="button" value="上传" @click="uploadImage">
-      <input type="button" value="刷新列表" @click="getImageList">
+      <div>
+        <div>选择图片文件：<input id="fileUpload" type="file" name="filename"></div>
+        <div>
+          <label>修改上传后的文件名：</label><input type="text" v-model="renamedFileName">
+          <input type="button" value="上传图片" @click="uploadImage">
+          <input type="button" value="刷新列表" @click="getImageList">
+        </div>
+      </div>
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
         <div>文件名: {{ imgItem.fileName }}</div>
         <div>时间: {{ imgItem.uploadTime }}</div>
@@ -35,6 +40,7 @@ export default {
     // 引用编辑器组件的对象
     const editor = ref(null);
 
+    const renamedFileName = ref("");
     const imageData = reactive({
       list: []
     });
@@ -229,10 +235,20 @@ export default {
       }
     }
 
+    // 上传图片
     const uploadImage = async () => {
-      console.log('fileUpload', document.querySelector('#fileUpload').files[0]);
+      let fileUploadEle = document.querySelector('#fileUpload').files[0];
+      console.log('fileUpload', fileUploadEle);
+      console.log('fileUpload.name', fileUploadEle.name);
+
+      // 修改原上传图片的名字
+      if (renamedFileName.value !== '') {
+        console.log('Renamed image file name', renamedFileName.value);
+        fileUploadEle = renameFile(fileUploadEle, renamedFileName.value)
+        console.log('After rename', fileUploadEle);
+      }
       try {
-        const response = await postForm('/api/wiki/image', document.querySelector('#fileUpload').files[0]);
+        const response = await postForm('/api/wiki/image', fileUploadEle);
         if (response.Success) {
           console.log('Response from upload image', response);
         } else {
@@ -242,6 +258,15 @@ export default {
         console.error('Error when uploading image', error);
       }
       getImageList();
+      document.querySelector('#fileUpload').value = '';
+      renamedFileName.value = '';
+    }
+
+    function renameFile(originalFile, newName) {
+      return new File([originalFile], newName, {
+        type: originalFile.type,
+        lastModified: originalFile.lastModified,
+      });
     }
 
     return {
@@ -253,7 +278,8 @@ export default {
       imageData,
       getImageList,
       deleteImage,
-      uploadImage
+      uploadImage,
+      renamedFileName
     }
   }
 }

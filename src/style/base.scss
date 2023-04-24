@@ -117,6 +117,11 @@ input[type=text] {
   color: var(--input-color);
 }
 
+input[type=file] {
+  background-color: var(--input-background-color);
+  color: var(--input-color);
+}
+
 // 对话框的淡入淡出
 .fade-enter-active,
 .fade-leave-active {
