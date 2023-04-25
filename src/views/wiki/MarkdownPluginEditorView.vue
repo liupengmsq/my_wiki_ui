@@ -11,7 +11,7 @@
       </div>
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
         <div>文件名: {{ imgItem.fileName }}</div>
-        <div>时间: {{ imgItem.uploadTime }}</div>
+        <div>上传时间: {{ imgItem.uploadLocalTime }}</div>
         <a :href="'http://imgs.pengliu.me:8080/' + imgItem.fileName" target="_blank">
           <img id="drag1" draggable="true" @dragstart="drag" :src="'http://imgs.pengliu.me:8080/' + imgItem.fileName">
         </a>
@@ -153,17 +153,9 @@ export default {
         resizable(ele);
       });
 
-      get('/api/wiki/image').then(response => {
-        console.log('GET /api/wiki/image', response);
-        if (response.Success) {
-          imageData.list = response.Result;
-        }
-      });
-
-      console.log('imageData.list', imageData.list);
+      // 页面初次展示的时候，显示图片列表信息
+      getImageList();
     });
-
-
 
     // 左侧图片拖动到编辑区的功能实现
     const allowDrop = (ev) => {
@@ -210,7 +202,25 @@ export default {
         const response = await get('/api/wiki/image');
         console.log('GET /api/wiki/image', response);
         if (response.Success) {
-          imageData.list = response.Result;
+          // 转换api返回的UTC时间为本地浏览器时间
+          const imageList = [];
+          for (const imageItemInResponse of response.Result) {
+            const imageItem = {};
+            imageItem.fileName = imageItemInResponse.fileName;
+            imageItem.uploadLocalTime = new Date(imageItemInResponse.uploadTime).toLocaleString("en-US", {
+              localeMatcher: "best fit",
+              timeZoneName: "short"
+            });
+            imageList.push(imageItem);
+          }
+          imageList.sort(
+            function (a, b) {
+              // Turn your strings into dates, and then subtract them
+              // to get a value that is either negative, positive, or zero.
+              return new Date(b.uploadLocalTime) - new Date(a.uploadLocalTime);
+            }
+          );
+          imageData.list = imageList;
         } else {
           console.error('Error when GET for /api/wiki/image', response);
         }
@@ -235,7 +245,7 @@ export default {
       }
     }
 
-    // 上传图片
+    // 上传图片到后端
     const uploadImage = async () => {
       let fileUploadEle = document.querySelector('#fileUpload').files[0];
       console.log('fileUpload', fileUploadEle);
@@ -262,7 +272,8 @@ export default {
       renamedFileName.value = '';
     }
 
-    function renameFile(originalFile, newName) {
+    // 重命名图片文件对象
+    const renameFile = (originalFile, newName) => {
       return new File([originalFile], newName, {
         type: originalFile.type,
         lastModified: originalFile.lastModified,
