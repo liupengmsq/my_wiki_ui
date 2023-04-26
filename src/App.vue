@@ -1,11 +1,10 @@
 <template>
   <div class="top-nav-container">
     <nav class="top-nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/wiki">Wiki</router-link> |
-      <router-link to="/markdown">Markdown</router-link> |
-      <router-link to="/markdownEditorPlugin">Markdown Editor</router-link>
+      <router-link to="/">主页</router-link> |
+      <router-link to="/markdownEditorPlugin">Markdown编辑器</router-link>
       <input type="button" value="更换主题" @click="switchTheme" />
+      <theme-switcher />
     </nav>
   </div>
   <router-view/>
@@ -15,8 +14,11 @@
 import { onMounted, reactive } from 'vue';
 import light from 'highlight.js/styles/github.css?url'
 import dark from 'highlight.js/styles/dark.css?url'
+import ThemeSwitcher from './views/header/ThemeSwitcher.vue';
 
 export default {
+  components: { ThemeSwitcher },
+
   setup() {
     onMounted(() => {
       console.log('dark', dark);
@@ -37,6 +39,7 @@ export default {
       lightModePreference.addEventListener("change", e => e.matches && activateLightMode());
     });
 
+    // 更改网站的主题，切换dark与light主题
     const switchTheme = () => {
       var theme = document.getElementById('theme');
       if (document.documentElement.classList.contains("light")) {

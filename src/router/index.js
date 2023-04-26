@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import * as nav_util from '../utils/nav';
 import { defineAsyncComponent } from "vue"
 
@@ -7,7 +6,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: () => import('../views/wiki/WikiMainView.vue')
   },
   {
     path: '/wiki',
@@ -33,7 +32,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   // 当/wiki后面没有id这个query string的时候，默认从后端获取根节点的wiki page ID
-  if(to.name === "wikiMainView" && !Object.hasOwn(to.query, "id")){
+  if((to.name === "wikiMainView" || to.name === "home") && !Object.hasOwn(to.query, "id")){
     try {
       const response = await nav_util.getNavTreeRootNode();
       console.log('Got root node', response);
