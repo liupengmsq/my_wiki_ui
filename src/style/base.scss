@@ -115,6 +115,17 @@ a:hover {
   cursor: pointer; // 光标变为手型
 }
 
+ul {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start:0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+}
+
 i {
   font-style: normal;
 }

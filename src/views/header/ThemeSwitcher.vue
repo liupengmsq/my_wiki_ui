@@ -9,7 +9,6 @@
       <a @click="switchToDarkTheme" href="#"><div class="dropdown-item" :class="{'dropdown-item--selected':darkThemeDropdownItemSelected}"><span class="icon-dark"></span>Dark</div></a>
     </div>
   </div>
-  <div class="masked"></div> 
 </template>
 
 <script>

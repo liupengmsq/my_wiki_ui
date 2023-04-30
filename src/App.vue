@@ -1,10 +1,10 @@
 <template>
   <div class="top-nav-container">
-    <nav class="top-nav">
-      <router-link to="/">主页</router-link> |
-      <router-link to="/markdownEditorPlugin">Markdown编辑器</router-link>
-      <div class="top-nav-right"><theme-switcher ref="themeSwitcher" /></div>
-    </nav>
+    <ul class="top-nav">
+      <li class="top-nav-left"><router-link to="/">主页</router-link></li>
+      <li class="top-nav-left"><router-link to="/markdownEditorPlugin">Markdown编辑器</router-link></li>
+      <li class="top-nav-right"><div class="dropdown-wrapper"><theme-switcher ref="themeSwitcher" /></div></li>
+    </ul>
   </div>
   <router-view/>
 </template>
@@ -83,21 +83,31 @@ export default {
   width: 100%;
   padding-left: auto;
   padding-right: auto;
-  padding-top: .1rem;
-  padding-bottom: .1rem;
-  /* background-color: #0593d3; */
+  padding-top: .05rem;
+  padding-bottom: .05rem;
 }
 .top-nav {
   display: flex;
+  align-items: center;
   max-width: 1760px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  /* color: #fff; */
 }
-
+.top-nav-left {
+  margin-right: .1rem;
+  background-color: var(--body-background-color);
+  color: var(--button-color);
+  padding: .05rem;
+  font-size: .15rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.05rem;
+}
+.top-nav-left:hover {
+  background-color: var(--theme-dropdown-hover-background-color); 
+}
 .top-nav-right {
   margin-left: auto;
 }
-
 </style>
