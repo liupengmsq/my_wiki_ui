@@ -1,6 +1,6 @@
 <template>
   <div id="content" class="content">
-    <h1>这里是标题 {{ wikiId }}</h1>
+    <h1>{{ wikiData.title }}</h1>
     <p v-html="wikiData.markdownContent"></p>
   </div>
 </template>
@@ -20,6 +20,7 @@ export default {
     // 当前wiki page的在数据库中的主键id
     const wikiId = route.query.id;
     const wikiData = reactive({
+      title: '',
       markdownContent: '',
     });
 
@@ -33,6 +34,7 @@ export default {
       get(`/api/wiki/${route.query.id}`).then(response => {
         console.log(`Response from "/wiki/${route.query.id}"`, response);
         wikiData.markdownContent = marked(response.Result.markdownContent);
+        wikiData.title = response.Result.title;
       }).catch(error => {
         console.error(`Error from "/wiki/${route.query.id}"`, error);
       });
@@ -52,6 +54,7 @@ export default {
   background-color: var(--wiki-content-background-color);
   padding: .1rem .1rem .1rem .1rem;
   border-radius: 0 5px 5px 0;
+  overflow: hidden; // 处理图片image撑大父div的情况
 }
 
 </style>
