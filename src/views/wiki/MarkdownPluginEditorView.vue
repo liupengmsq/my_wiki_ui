@@ -21,17 +21,26 @@
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right" @drop="drop" @dragover="allowDrop">
       <h1 class="mk-editor-title">Markdown编辑器</h1>
-      <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor"></v-md-editor>
+      <div><span class="mk-editor-info">{{ info }}</span></div>
+      <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor"
+        :toolbar="toolbar" 
+        left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table | link image code | save restore"
+      ></v-md-editor>
     </div>
   </div>
+  <confirm-dialog ref="confirmDialog"></confirm-dialog>
 </template>
   
 <script>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, onBeforeUnmount } from 'vue';
 import { get, deleteAPI, postForm } from '../../utils/request';
+import ConfirmDialog from '../../components/ConfirmDialog.vue'
 
 export default {
   name: 'MarkdownEditorView',
+  components: {
+    ConfirmDialog,
+  },
 
   setup() {
     // markdown解析
@@ -44,6 +53,8 @@ export default {
     const imageData = reactive({
       list: []
     });
+
+    const info = ref("");
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -155,6 +166,9 @@ export default {
 
       // 页面初次展示的时候，显示图片列表信息
       getImageList();
+
+      // 开启定时任务功能：每分钟将markdown内容保存到localStorage中
+      pollData();
     });
 
     // 左侧图片拖动到编辑区的功能实现
@@ -280,6 +294,63 @@ export default {
       });
     }
 
+    // 定时将markdown中的内容保存到localStorage中
+    const polling = ref(null);
+    const pollData = () => {
+      // 每分钟自动保存markdown内容到localStorage中
+      polling.value = setInterval(() => {
+        saveToLocalStorage();
+      }, 1000 * 60);
+    }
+
+    onBeforeUnmount(() => {
+      clearInterval(polling.value);
+    })
+
+    // 保存当前markdown内容到localStorage中
+    const saveToLocalStorage = () => {
+      if (markdown.value) {
+        console.log('Saving markdown content to local storage...');
+        console.log(markdown.value);
+        var currentdate = new Date();
+        var datetime = (currentdate.getMonth()+1)  + "/" 
+          + currentdate.getDate() + "/" 
+          + currentdate.getFullYear()  + " "  
+          + currentdate.getHours() + ":"  
+          + currentdate.getMinutes() + ":" 
+          + currentdate.getSeconds();
+        info.value = '上次保存时间：' + datetime;
+        localStorage.markdown = markdown.value;
+      }
+    }
+
+    // 从localStorage中将markdown内容恢复到编辑区
+    const confirmDialog = ref(null);
+    const toolbar = reactive({
+      restore: {
+        title: '从缓存中恢复',
+        icon: 'v-md-icon-tip',
+        async action(editor) {
+          let restoreFromLocalStorage = ''
+          const confirmResult = await confirmDialog.value.show({
+            // 确认对话框的标题
+            title: '确认从缓存恢复Markdown内容？',
+            // 确认对话框的消息
+            message: ``,
+            // 点击确认按钮后执行的方法
+            onClickOKButton: async function () {
+              restoreFromLocalStorage = localStorage.markdown;
+            }
+          });
+          editor.insert(() => {
+            return {
+              text: restoreFromLocalStorage,
+            };
+          });
+        },
+      }
+    });
+
     return {
       markdown,
       editor,
@@ -290,7 +361,11 @@ export default {
       getImageList,
       deleteImage,
       uploadImage,
-      renamedFileName
+      renamedFileName,
+      saveToLocalStorage,
+      info,
+      toolbar,
+      confirmDialog 
     }
   }
 }
@@ -345,6 +420,9 @@ export default {
 .mk-editor-title {
   margin-left: 0.1rem;
   margin-right: auto;
+}
+.mk-editor-info {
+  margin-left: 0.1rem;
 }
 
 .image_item {
