@@ -20,7 +20,8 @@
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right" @drop="drop" @dragover="allowDrop">
-      <h1 class="mk-editor-title">Markdown编辑器</h1>
+      <h1 v-if="isVisibleTitle" @click="showInputTitleTextbox" class="mk-editor-title">{{ wikiTitle }}</h1>
+      <input v-if="isVisibleInputTitleTextbox" ref="titleTextbox" tabindex="1" v-model="wikiTitle" @focus="$event.target.select()" @keyup.enter="showWikiTitle" class="mk-editor-title-input" type="text" placeholder="输入标题" name="title" required>
       <div><span class="mk-editor-info">{{ info }}</span></div>
       <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor"
         :toolbar="toolbar" 
@@ -32,7 +33,7 @@
 </template>
   
 <script>
-import { ref, onMounted, reactive, onBeforeUnmount } from 'vue';
+import { ref, onMounted, reactive, onBeforeUnmount, nextTick } from 'vue';
 import { get, deleteAPI, postForm } from '../../utils/request';
 import ConfirmDialog from '../../components/ConfirmDialog.vue'
 
@@ -54,6 +55,9 @@ export default {
       list: []
     });
 
+    const titleTextbox = ref(null);
+
+    // 显示信息
     const info = ref("");
 
     onMounted(() => {
@@ -294,6 +298,30 @@ export default {
       });
     }
 
+    // wiki标题相关
+    const wikiTitle = ref('点击编辑标题');
+    const isVisibleTitle = ref(true);
+    
+    // 显示标题，隐藏标题的textbox
+    const showWikiTitle = () => {
+      isVisibleTitle.value = true;
+      isVisibleInputTitleTextbox.value = false;
+    }
+    const isVisibleInputTitleTextbox = ref(false);
+
+    // 隐藏标题，显示标题的textbox
+    const showInputTitleTextbox = async () => {
+      isVisibleTitle.value = false;
+      isVisibleInputTitleTextbox.value = true;
+
+      console.log('Before updating dom.');
+      await nextTick();
+      console.log('After updating dom.');
+
+      // 将焦点放在textobx上
+      titleTextbox.value.focus();
+    }
+
     // 定时将markdown中的内容保存到localStorage中
     const polling = ref(null);
     const pollData = () => {
@@ -316,11 +344,16 @@ export default {
         var datetime = (currentdate.getMonth()+1)  + "/" 
           + currentdate.getDate() + "/" 
           + currentdate.getFullYear()  + " "  
-          + currentdate.getHours() + ":"  
-          + currentdate.getMinutes() + ":" 
-          + currentdate.getSeconds();
+          + ((currentdate.getHours() < 10) ? "0" : "") + currentdate.getHours() + ":"  
+          + ((currentdate.getMinutes() < 10) ? "0" : "") + currentdate.getMinutes() + ":"  
+          + ((currentdate.getSeconds() < 10) ? "0" : "") + currentdate.getSeconds(); 
         info.value = '上次保存时间：' + datetime;
         localStorage.markdown = markdown.value;
+      }
+      if (wikiTitle) {
+        console.log('Saving wiki title to local storage...');
+        console.log(wikiTitle.value);
+        localStorage.wikiTitle = wikiTitle.value;
       }
     }
 
@@ -340,6 +373,7 @@ export default {
             // 点击确认按钮后执行的方法
             onClickOKButton: async function () {
               restoreFromLocalStorage = localStorage.markdown;
+              wikiTitle.value = localStorage.wikiTitle;
             }
           });
           editor.insert(() => {
@@ -365,7 +399,13 @@ export default {
       saveToLocalStorage,
       info,
       toolbar,
-      confirmDialog 
+      confirmDialog,
+      wikiTitle,
+      isVisibleTitle,
+      showWikiTitle,
+      isVisibleInputTitleTextbox,
+      showInputTitleTextbox,
+      titleTextbox
     }
   }
 }
@@ -423,6 +463,16 @@ export default {
 }
 .mk-editor-info {
   margin-left: 0.1rem;
+}
+
+.mk-editor-title-input {
+  width: 93%;
+  margin: .067rem ;
+  padding: .12rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: .3rem;
+  font-weight: 500;
 }
 
 .image_item {
