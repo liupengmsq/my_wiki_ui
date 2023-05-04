@@ -21,26 +21,49 @@
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right" @drop="drop" @dragover="allowDrop">
       <h1 v-if="isVisibleTitle" @click="showInputTitleTextbox" class="mk-editor-title">{{ wikiTitle }}</h1>
-      <input v-if="isVisibleInputTitleTextbox" ref="titleTextbox" tabindex="1" v-model="wikiTitle" @focus="$event.target.select()" @keyup.enter="showWikiTitle" class="mk-editor-title-input" type="text" placeholder="输入标题" name="title" required>
-      <div><span class="mk-editor-info">{{ info }}</span></div>
-      <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor"
+      <input class="mk-editor-title-input" 
+        v-if="isVisibleInputTitleTextbox" 
+        ref="titleTextbox" 
+        tabindex="1" 
+        v-model="wikiTitle" 
+        @focus="$event.target.select()"  
+        @keyup.enter="showWikiTitle" 
+        type="text" 
+        placeholder="输入标题" 
+        name="title" 
+        required
+      >
+      <div class="wiki-category">
+        <label>选择Wiki分类：</label>
+        <select v-model="selectedWikiCategoryItem">
+          <option v-for="categoryName in wikiCategoryList.list" :key="categoryName" :value="categoryName">
+            {{categoryName}}
+          </option>
+        </select>
+        <span class="mk-editor-info">{{ info }}</span>
+      </div>
+      <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor" @save="saveWiki"
         :toolbar="toolbar" 
         left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table | link image code | save restore"
       ></v-md-editor>
     </div>
   </div>
   <confirm-dialog ref="confirmDialog"></confirm-dialog>
+  <message-dialog ref="messageDialog"></message-dialog>
 </template>
   
 <script>
 import { ref, onMounted, reactive, onBeforeUnmount, nextTick } from 'vue';
-import { get, deleteAPI, postForm } from '../../utils/request';
+import { get, deleteAPI, postForm, post } from '../../utils/request';
+import router from "../../router/index.js"; 
 import ConfirmDialog from '../../components/ConfirmDialog.vue'
+import MessageDialog from '../../components/MessageDialog.vue'
 
 export default {
   name: 'MarkdownEditorView',
   components: {
     ConfirmDialog,
+    MessageDialog,
   },
 
   setup() {
@@ -59,6 +82,28 @@ export default {
 
     // 显示信息
     const info = ref("");
+
+    // 关于wiki分类
+    const wikiCategoryList = reactive({
+      list: []
+    });
+    const selectedWikiCategoryItem = ref(null);
+    // 调用后端API获取wiki category信息
+    const getWikiCategories = async () => {
+      try {
+        const response = await get('/api/wiki/category');
+        if (response.Success) {
+          selectedWikiCategoryItem.value = response.Result[0].categoryName
+          for (const c of response.Result) {
+            wikiCategoryList.list.push(c.categoryName);
+          }
+        } else {
+          console.error('Error when GET for /api/wiki/category', response);
+        }
+      } catch (error) {
+        console.error('Error when GET for /api/wiki/category', error);
+      }
+    }
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -173,6 +218,9 @@ export default {
 
       // 开启定时任务功能：每分钟将markdown内容保存到localStorage中
       pollData();
+
+      // 调用后端API获取wiki category信息
+      getWikiCategories();
     });
 
     // 左侧图片拖动到编辑区的功能实现
@@ -385,6 +433,73 @@ export default {
       }
     });
 
+    // 保存wiki到后端
+    const messageDialog = ref(null);
+    const saveWiki = async () => {
+      console.log('Saving wiki...');
+      const postData = {
+        title: wikiTitle.value,
+        markdownContent: markdown.value,
+        categoryName: selectedWikiCategoryItem.value
+      };
+
+      if (postData.title === "" || postData.title === "点击编辑标题") {
+        await messageDialog.value.show({
+          title: '标题为空',
+          message: '标题为空，请输入标题！！',
+          success: false,
+        })
+        return;
+      }
+
+      if (postData.markdownContent === "") {
+        await messageDialog.value.show({
+          title: 'Wiki内容为空',
+          message: 'Wiki内容为空，请输入内容！！',
+          success: false,
+        })
+        return;
+      }
+
+      if (postData.categoryName === "") {
+        await messageDialog.value.show({
+          title: 'Wiki分类为空',
+          message: 'Wiki分类为空，请选择一种分类！！',
+          success: false,
+        })
+        return;
+      }
+
+      try {
+        const response = await post('/api/wiki', postData);
+        // 创建成功
+        if (response.Success) {
+          await messageDialog.value.show({
+            title: '创建成功',
+            message: 'Wiki ID: ' + response.Result.id,
+            success: true,
+          })
+
+          // 返回首页
+          router.push({name: 'home'});
+        } else {
+          // 创建失败
+          await messageDialog.value.show({
+            title: '创建失败',
+            message: error,
+            success: false,
+          })
+        }
+      } catch (error) {
+        // 创建失败
+        await messageDialog.value.show({
+          title: '创建失败',
+          message: error,
+          success: false,
+        })
+      }
+    }
+
     return {
       markdown,
       editor,
@@ -405,7 +520,11 @@ export default {
       showWikiTitle,
       isVisibleInputTitleTextbox,
       showInputTitleTextbox,
-      titleTextbox
+      titleTextbox,
+      wikiCategoryList,
+      selectedWikiCategoryItem,
+      saveWiki,
+      messageDialog
     }
   }
 }
@@ -475,11 +594,16 @@ export default {
   font-weight: 500;
 }
 
+.wiki-category {
+  margin-left: .1rem;
+}
+
 .image_item {
   text-align: left;
   margin-bottom: .1rem;
   padding: .1rem;
   border: .01rem solid #aaaaaa;
+  user-select: none;
 }
 
 .image_item:hover {

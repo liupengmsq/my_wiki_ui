@@ -302,6 +302,7 @@ export default {
   padding: 0 .2rem 0 .2rem;
   width: 316px;
   box-sizing: border-box;
+  user-select: none;
 }
 .nav-selected {
   background: var(--nav-selected-background-color) !important;
