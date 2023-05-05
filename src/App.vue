@@ -3,6 +3,7 @@
     <ul class="top-nav">
       <li class="top-nav-left"><router-link to="/">主页</router-link></li>
       <li class="top-nav-left"><router-link to="/markdownEditorPlugin">Markdown编辑器</router-link></li>
+      <li class="top-nav-left"><router-link to="/wikiManage">后台管理</router-link></li>
       <li class="top-nav-right"><div class="dropdown-wrapper"><theme-switcher ref="themeSwitcher" /></div></li>
     </ul>
   </div>

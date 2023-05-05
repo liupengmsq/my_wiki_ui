@@ -1,6 +1,8 @@
 <template>
   <div id="content" class="content">
-    <h1>{{ wikiData.title }}</h1>
+    <div class="title">{{ wikiData.title }}</div>
+    <div class="info">Last updated: {{ wikiData.updatedTime }} / Reads: {{ wikiData.pageView }}</div>
+    <hr>
     <p v-html="wikiData.markdownContent"></p>
   </div>
 </template>
@@ -22,6 +24,8 @@ export default {
     const wikiData = reactive({
       title: '',
       markdownContent: '',
+      updatedTime: '',
+      pageView: 0
     });
 
     onMounted(() => {
@@ -31,10 +35,14 @@ export default {
       })
 
       // 从后端API获取当前wiki的内容
-      get(`/api/wiki/${route.query.id}`).then(response => {
+      get(`/api/wiki/${route.query.id}?updateAccessInfo=true`).then(response => {
         console.log(`Response from "/wiki/${route.query.id}"`, response);
         wikiData.markdownContent = marked(response.Result.markdownContent);
         wikiData.title = response.Result.title;
+        wikiData.updatedTime = new Date(response.Result.updatedDateTime).toLocaleString("en-US", {
+          localeMatcher: "best fit",
+        });
+        wikiData.pageView = response.Result.pageViewedNumber;
       }).catch(error => {
         console.error(`Error from "/wiki/${route.query.id}"`, error);
       });
@@ -55,6 +63,11 @@ export default {
   padding: .1rem .1rem .1rem .1rem;
   border-radius: 0 5px 5px 0;
   overflow: hidden; // 处理图片image撑大父div的情况
+}
+
+.title {
+  font-size: .18rem;
+  margin: 0 0 .15rem 0;
 }
 
 </style>

@@ -1,97 +1,76 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
-      <div class="image_item">
-        <a href="http://imgs.pengliu.me:8080/123123123.png" target="_blank">
-          <img src="http://imgs.pengliu.me:8080/123123123.png" alt="alt 属性文本" title="可选标题" width="50%">
-        </a>
-      </div>
+      <nav-tree-view :showManageButtons=true />
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">
-      <div class="container__top">
-        <h1 class="mk-editor-title">Markdown编辑器</h1>
-        <textarea class="mk-editor" v-model="markdown"></textarea>
-      </div>
-      <div class="resizer" data-direction="vertical"></div>
-      <div class="container__bottom">
-        <h1 class="mk-preview-title">预览</h1>
-        <div class="mk-preview" v-html="markdownToHtml"></div>
+      <div class="wrapper">
+        <h1>Wiki Category</h1>
+        <input class="add-category" type="button" value="新增" @click="addCategory">
+        <table>
+          <th>Id</th>
+          <th>Name</th>
+          <th class="th-operation">Manage</th>
+          <tr v-for="item in categoryList.list" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.category }}</td>
+            <td>
+              <input class="operation" type="button" @click="editCategory(item.id)" value="编辑">
+              <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
 </template>
-  
+
 <script>
-import { computed, ref, onMounted } from 'vue';
-import { marked } from 'marked';
-import hljs from 'highlight.js';
+import { ref, reactive, onMounted } from 'vue';
+import NavTreeView from '../nav/NavTreeView.vue';
 
 export default {
-  name: 'MarkdownEditorView',
+  name: 'WikiManageView',
+  components: {
+    NavTreeView
+  },
 
   setup() {
-    // markdown解析
-    const markdown = ref("");
-    marked.options({
-      highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
-    })
-    const markdownToHtml = computed(() => marked(markdown.value));
+    const categoryList = reactive({
+      list: []
+    });
+
+    const getWikiCategory = () => {
+      const temp = [];
+      temp.push({
+        id: 1,
+        category: 'test category 1',
+      });
+      temp.push({
+        id: 2,
+        category: 'test category 2',
+      });
+
+      return temp;
+    }
+
+    const addCategory = () => {
+      categoryList.list.push(
+        {
+          id: 3,
+          category: 'test category 3',
+        }
+      );
+    }
+
+    const editCategory = (categoryId) => {
+      alert(categoryId);
+    }
+
+    const deleteCategory = (categoryId) => {
+      alert(categoryId);
+    }
 
     onMounted(() => {
       // 实现横向与纵向可拖动的功能
@@ -196,18 +175,25 @@ export default {
         resizer.addEventListener('mousedown', mouseDownHandler);
       };
 
-      // Query all resizers
+      // 使所有的分割div可拖动
       document.querySelectorAll('.resizer').forEach(function (ele) {
         resizable(ele);
       });
+
+      categoryList.list = getWikiCategory();
     });
 
     return {
-      markdown,
-      markdownToHtml,
+      NavTreeView,
+      categoryList,
+      addCategory,
+      editCategory,
+      deleteCategory
     }
   }
+
 }
+
 </script>
 
 <style scoped>
@@ -222,7 +208,7 @@ export default {
   /* display: flex; */
 
   /* Initially, the left takes 1/4 width */
-  width: 25%;
+  width: 20%;
 
   align-items: center;
   justify-content: center;
@@ -232,36 +218,14 @@ export default {
 }
 
 .container__right {
-  display: flex;
+  /* display: flex; */
   /* Take the remaining width */
   flex: 1;
 
-  align-items: stretch;
+  /* align-items: stretch; */
   flex-direction: column;
   justify-content: center;
   overflow-x: scroll;
-}
-
-.container__top {
-  /* display: flex; */
-
-  /* Initial height */
-  /* height: 12rem; */
-
-  align-items: center;
-  justify-content: center;
-  overflow-y: scroll;
-}
-
-.container__bottom {
-  /* display: flex; */
-
-  /* Take the remaining height */
-  flex: 1;
-
-  align-items: center;
-  justify-content: center;
-  overflow-y: scroll;
 }
 
 .resizer[data-direction='horizontal'] {
@@ -277,42 +241,40 @@ export default {
   height: 2px;
   width: 100%;
 }
-
-.mk-editor-title {
-  margin-left: 0.1rem;
-  margin-right: auto;
-}
-.mk-editor {
-  width: 12.54rem;
-  height: 4.62rem;
-  overflow-x: scroll;
-  overflow-y: scroll;
-  resize: both;
-  margin-left: 0.1rem;
-  margin-right: auto;
-  padding: .2rem;
-  line-height: 1.5;
-  border-radius: .05rem;
-  box-shadow: .01rem .01rem .01rem #999;
+.wrapper {
+  overflow-x: auto;
 }
 
-.mk-preview-title {
-  margin-left: 0.1rem;
-  margin-right: auto;
+.add-category {
+  margin: 5px 0;
 }
 
-.mk-preview {
-  width: 12.54rem;
-  height: 4.62rem;
-  overflow-x: scroll;
-  overflow-y: scroll;
-  resize: both;
-  margin-left: 0.1rem;
-  margin-right: auto;
-  border: 1px solid #cbd5e0;
-  padding: .2rem;
-  border-radius: .05rem;
-  box-shadow: .01rem .01rem .01rem #999;
+table {
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: skyblue;
+}
+
+
+.th-operation {
+  width: 10%;
+}
+
+.operation {
+  margin-right: 5px;
 }
 </style>
-  

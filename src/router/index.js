@@ -14,14 +14,14 @@ const routes = [
     component: () => import('../views/wiki/WikiMainView.vue')
   },
   {
-    path: '/markdown',
-    name: 'markdown',
-    component: () => import('../views/wiki/MarkdownEditorView.vue')
-  },
-  {
     path: '/markdownEditorPlugin',
     name: 'markdownEditorPlugin',
     component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
+  },
+  {
+    path: '/wikiManage',
+    name: 'wikiManage',
+    component: () => import('../views/wiki/WikiManageView.vue')
   }
 ]
 

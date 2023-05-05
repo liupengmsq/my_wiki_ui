@@ -1,8 +1,10 @@
 <template>
   <div class="nav_container">
-    <input type="button" value="管理" @click="onClickManageNavTreeButton">
-    <input type="button" value="返回" @click="onClickDisableManageNavTreeButton">
-    <input type="button" value="新建根节点" @click="onClickCreateNavTreeRootNodeButton">
+    <div v-if="showManageButtons">
+      <input type="button" value="管理" @click="onClickManageNavTreeButton">
+      <input type="button" value="返回" @click="onClickDisableManageNavTreeButton">
+      <input type="button" value="新建根节点" @click="onClickCreateNavTreeRootNodeButton">
+    </div>
     <div id="nav" class="nav" v-html="finalHtml" @click="onNodeClicked"></div>
   </div>
 
@@ -23,6 +25,7 @@ import NavNodeCreateEditDialog from './NavNodeCreateEditDialog.vue'
 
 export default {
   name: 'AboutView',
+  props: ['showManageButtons'],
   components: {
     ConfirmDialog,
     MessageDialog,
