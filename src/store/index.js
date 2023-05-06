@@ -56,7 +56,7 @@ export default createStore({
       }
       console.warn("当前的管理模式为：", manageMode);
 
-      const root = await getNavTree(manageMode);
+      const root = await getNavTree(3, manageMode);
       console.log('root from getNavTree()', root);
 
       // 用state全局对象保存树的根节点

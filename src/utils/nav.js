@@ -1,9 +1,9 @@
 import { get, deleteAPI, post, put } from '../utils/request';
 
 // 从后端API与localStorage构造出节点的树结构，并返回根节点
-export const getNavTree = async (manageMode=false) => {
+export const getNavTree = async (categoryId, manageMode=false) => {
   // 从后端API "GET /api/nav" 获取导航栏信息
-  const response = await get(`/api/nav/tree`);
+  const response = await get(`/api/nav/tree`, {categoryId: categoryId});
   console.log('Get from /api/nav', response);
   if (!response.Success) {
     console.error("Error when calling API '/api/nav/tree'!!", response.Errors);
@@ -246,7 +246,7 @@ export const select_nav_tree_node = (nodeId) => {
   }
 }
 
-export const createNavTreeNode = async (parentNodeId, title, url, isRoot=false) => {
+export const createNavTreeNode = async (parentNodeId, title, url, categoryId, isRoot=false) => {
   const postData = {
     target: url,
     content: title,
@@ -255,7 +255,7 @@ export const createNavTreeNode = async (parentNodeId, title, url, isRoot=false) 
   if (!isRoot) {
     postData['parentId'] = parentNodeId
   }
-  const response = await post('/api/nav/tree/', postData);
+  const response = await post('/api/nav/tree', postData, {categoryId: categoryId});
   console.log('response from post nav', response);
   return response;
 }
@@ -280,8 +280,8 @@ export const getNavTreeNodeById = async (nodeId) => {
     return response;
 }
 
-export const getNavTreeRootNode = async () => {
-    const response =  await get(`/api/nav/root`);
+export const getNavTreeRootNode = async (categoryId) => {
+    const response =  await get(`/api/nav/root`, {categoryId: categoryId});
     console.log(response);
     return response;
 }

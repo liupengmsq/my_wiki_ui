@@ -25,14 +25,14 @@ import NavNodeCreateEditDialog from './NavNodeCreateEditDialog.vue'
 
 export default {
   name: 'AboutView',
-  props: ['showManageButtons'],
+  props: ['showManageButtons', 'categoryId'],
   components: {
     ConfirmDialog,
     MessageDialog,
     NavNodeCreateEditDialog,
   },
 
-  setup () {
+  setup (props) {
     const store = useStore();
     const confirmDialog = ref(null);
     const messageDialog = ref(null);
@@ -146,9 +146,9 @@ export default {
           okButton: '新建',
           onClickOKButton: async function (nodeTitle, nodeURL) {
             if(forRootNode) {
-              return nav_util.createNavTreeNode(null, nodeTitle, nodeURL, true);
+              return nav_util.createNavTreeNode(null, nodeTitle, nodeURL, props.categoryId, true);
             } else {
-              return nav_util.createNavTreeNode(parentNodeId, nodeTitle, nodeURL);
+              return nav_util.createNavTreeNode(parentNodeId, nodeTitle, nodeURL, props.categoryId);
             }
           }
         });

@@ -18,9 +18,9 @@ export const get = (url, param = {}) => {
   });
 }
 
-export const post = (url, data = {}) => {
+export const post = (url, data = {}, param = {}) => {
   return new Promise((resolve, reject) => {
-    instance.post(url, data, {
+    instance.post(url, data, { params: param }, {
       headers: {
         'Content-Type': 'application/json'
       }

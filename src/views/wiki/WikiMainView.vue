@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="main theme-a">
-      <nav-tree-view :showManageButtons=false />
+      <nav-tree-view :showManageButtons=false :categoryId="3" />
       <wiki-content-view />
     </div>
   </div>

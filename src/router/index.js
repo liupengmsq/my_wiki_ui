@@ -34,7 +34,7 @@ router.beforeEach(async (to, from) => {
   // 当/wiki后面没有id这个query string的时候，默认从后端获取根节点的wiki page ID
   if((to.name === "wikiMainView" || to.name === "home") && !Object.hasOwn(to.query, "id")){
     try {
-      const response = await nav_util.getNavTreeRootNode();
+      const response = await nav_util.getNavTreeRootNode(3);
       console.log('Got root node', response);
       to.query.id = response.Result.target;
     } catch(error) {
