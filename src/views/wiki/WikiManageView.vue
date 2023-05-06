@@ -6,6 +6,7 @@
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">
       <div class="wrapper">
+        <router-link to="/markdownEditorPlugin">Markdown编辑器</router-link>
         <h1>Wiki Category</h1>
         <input class="add-category" type="button" value="新增" @click="addCategory">
         <table>

@@ -2,7 +2,9 @@
   <div class="dropdown">
     <button @click="showDropdown" class="dropbtn">
       <span class="icon" :class="{'icon-svg-dyn-os-default':defaultThemeClass,'icon-svg-dyn-light': lightThemeClass,'icon-svg-dyn-dark': darkThemeClass}">
-    </span>Theme</button>
+      </span>
+      Theme
+    </button>
     <div v-if="showMenu" class="dropdown-content">
       <a @click="switchToOSDefaultTheme" href="#"><div class="dropdown-item" :class="{'dropdown-item--selected':defaultThemeDropdownItemSelected}"><span class="icon-os-default"></span>OS Default</div></a>
       <a @click="switchToLightTheme" href="#"><div class="dropdown-item" :class="{'dropdown-item--selected':lightThemeDropdownItemSelected}"><span class="icon-light"></span>Light</div></a>
@@ -168,7 +170,7 @@ export default {
 
   display: inline-block;
   width: .20rem;
-  height: .20rem;
+  height: .15rem;
   margin-right:.04rem;
 }
 
@@ -220,7 +222,6 @@ export default {
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
   position: relative;
-  display: inline-block;
 }
 
 /* Dropdown Content (Hidden by Default) */
