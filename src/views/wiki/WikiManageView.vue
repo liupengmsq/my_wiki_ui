@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <nav-tree-view :showManageButtons=true :categoryId=3 />
+      <nav-tree-view :showManageButtons=true :categoryId=1 />
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">

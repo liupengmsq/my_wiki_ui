@@ -9,6 +9,7 @@ const routes = [
     component: () => import('../views/wiki/WikiMainView.vue')
   },
   {
+    // path: '/wiki/:id/:categoryId',
     path: '/wiki',
     name: 'wikiMainView',
     component: () => import('../views/wiki/WikiMainView.vue')
@@ -37,6 +38,8 @@ router.beforeEach(async (to, from) => {
       const response = await nav_util.getNavTreeRootNode(3);
       console.log('Got root node', response);
       to.query.id = response.Result.target;
+      to.query.categoryId = 1;
+      console.log('router.beforEach: to.query.categoryId', to.query.categoryId);
     } catch(error) {
       console.error('获取根节点失败！！！', error);
     }

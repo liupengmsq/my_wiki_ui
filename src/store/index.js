@@ -47,7 +47,8 @@ export default createStore({
   },
   actions: {
     // 生成新的节点树（从后端API读取树的信息，然后在前端构造出一棵树）
-    async generateNavTree({ commit, state }) {
+    async generateNavTree({ commit, state }, payload) {
+      console.log('payload in generateNavTree', payload);
       let manageMode = false;
       if (localStorage.manageMode) {
         manageMode = JSON.parse(localStorage.manageMode);
@@ -56,7 +57,8 @@ export default createStore({
       }
       console.warn("当前的管理模式为：", manageMode);
 
-      const root = await getNavTree(3, manageMode);
+      const { categoryId } = payload;
+      const root = await getNavTree(categoryId, manageMode);
       console.log('root from getNavTree()', root);
 
       // 用state全局对象保存树的根节点

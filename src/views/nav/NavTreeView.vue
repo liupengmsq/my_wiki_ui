@@ -16,6 +16,7 @@
 <script>
 import { useStore } from 'vuex';
 import router from "../../router/index.js"; 
+import { useRoute } from 'vue-router';
 import { computed, onMounted, ref } from 'vue';
 import * as nav_util from '../../utils/nav';
 
@@ -53,7 +54,7 @@ export default {
       e.target.classList.add('nav-selected');
 
       // 状态保存到localStorage中
-      nav_util.select_nav_tree_node(e.target.id);
+      nav_util.select_nav_tree_node(e.target.id, props.categoryId);
     }
 
     const onClickExpandIconOnNavNode = (e) => {
@@ -64,10 +65,10 @@ export default {
         if(child.tagName === 'DIV') {
           if (child.style.display === "none") {
             child.style.display = "block";
-            nav_util.show_nav_tree_node(child.id);
+            nav_util.show_nav_tree_node(child.id, props.categoryId);
           } else {
             child.style.display = "none";
-            nav_util.unshow_nav_tree_node(child.id);
+            nav_util.unshow_nav_tree_node(child.id, props.categoryId);
           }
         }
       }
@@ -76,12 +77,12 @@ export default {
       if (e.target.classList.contains('icon-expanded')) {
         e.target.classList.remove('icon-expanded');
         e.target.classList.add('icon-collapsed');
-        nav_util.collapse_nav_tree_node(e.target.id);
+        nav_util.collapse_nav_tree_node(e.target.id, props.categoryId);
 
       } else if (e.target.classList.contains('icon-collapsed')) {
         e.target.classList.remove('icon-collapsed');
         e.target.classList.add('icon-expanded');
-        nav_util.expand_nav_tree_node(e.target.id);
+        nav_util.expand_nav_tree_node(e.target.id, props.categoryId);
       }
     }
 
@@ -90,7 +91,15 @@ export default {
 
     // 初始化左侧导航栏
     onMounted(() => {
-      store.dispatch('generateNavTree', { manageMode: false });
+      let categoryId = null;
+      const route = useRoute();
+      if (route.query.categoryId) {
+        categoryId = route.query.categoryId;
+        localStorage.currentCategoryId = categoryId;
+      } else {
+        categoryId = localStorage.currentCategoryId;
+      }
+      store.dispatch('generateNavTree', { categoryId: categoryId });
     });
 
     // 通过在vue的raw html的父节点上监控事件触发，来实现raw html的事件处理
@@ -121,13 +130,13 @@ export default {
     // 点击管理按钮
     const onClickManageNavTreeButton = ()=> {
       nav_util.enableManageMode();
-      store.dispatch('generateNavTree');
+      store.dispatch('generateNavTree', { categoryId: props.categoryId });
     }
 
     // 点击返回按钮
     const onClickDisableManageNavTreeButton = ()=> {
       nav_util.disableManageMode();
-      store.dispatch('generateNavTree');
+      store.dispatch('generateNavTree', { categoryId: props.categoryId });
     }
 
     // 点击新建根节点按钮

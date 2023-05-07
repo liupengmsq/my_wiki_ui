@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="main theme-a">
-      <nav-tree-view :showManageButtons=false :categoryId="3" />
+      <nav-tree-view :showManageButtons=false :categoryId="categoryId" />
       <wiki-content-view />
     </div>
   </div>
@@ -10,6 +10,8 @@
 <script>
 import NavTreeView from '../nav/NavTreeView.vue';
 import WikiContentView from './WikiContentView.vue';
+import { useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
 
 export default {
   name: 'WikiMainView',
@@ -18,7 +20,19 @@ export default {
     WikiContentView
   },
   setup() {
+    const categoryId = ref(null);
+    onMounted(() => {
+      const route = useRoute();
+      if (route.query.categoryId) {
+        categoryId.value = route.query.categoryId;
+        localStorage.currentCategoryId = categoryId.value;
+      } else {
+        categoryId.value = localStorage.currentCategoryId;
+      }
+    });
+    console.log('route.query.categoryId', categoryId.value);
     return {
+      categoryId,
       NavTreeView,
       WikiContentView
     }
