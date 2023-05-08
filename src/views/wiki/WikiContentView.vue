@@ -20,7 +20,7 @@ export default {
     const route = useRoute();
 
     // 当前wiki page的在数据库中的主键id
-    const wikiId = route.query.id;
+    const wikiId = route.params.id;
     const wikiData = reactive({
       title: '',
       markdownContent: '',
@@ -29,14 +29,14 @@ export default {
     });
 
     onMounted(() => {
-      console.log('route.query.id', route.query.id);
+      console.log('route.params.id', route.params.id);
       marked.options({
         highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
       })
 
       // 从后端API获取当前wiki的内容
-      get(`/api/wiki/${route.query.id}?updateAccessInfo=true`).then(response => {
-        console.log(`Response from "/wiki/${route.query.id}"`, response);
+      get(`/api/wiki/${route.params.id}?updateAccessInfo=true`).then(response => {
+        console.log(`Response from "/wiki/${route.params.id}"`, response);
         wikiData.markdownContent = marked(response.Result.markdownContent);
         wikiData.title = response.Result.title;
         wikiData.updatedTime = new Date(response.Result.updatedDateTime).toLocaleString("en-US", {
@@ -44,7 +44,7 @@ export default {
         });
         wikiData.pageView = response.Result.pageViewedNumber;
       }).catch(error => {
-        console.error(`Error from "/wiki/${route.query.id}"`, error);
+        console.error(`Error from "/wiki/${route.params.id}"`, error);
       });
     });
 

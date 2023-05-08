@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import * as nav_util from '../utils/nav';
-import { defineAsyncComponent } from "vue"
+import { get } from '../utils/request';
 
 const routes = [
   {
@@ -9,8 +9,7 @@ const routes = [
     component: () => import('../views/wiki/WikiMainView.vue')
   },
   {
-    // path: '/wiki/:id/:categoryId',
-    path: '/wiki',
+    path: '/wiki/:categoryId/:id',
     name: 'wikiMainView',
     component: () => import('../views/wiki/WikiMainView.vue')
   },
@@ -33,13 +32,25 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   // 当/wiki后面没有id这个query string的时候，默认从后端获取根节点的wiki page ID
-  if((to.name === "wikiMainView" || to.name === "home") && !Object.hasOwn(to.query, "id")){
+  if((to.name === "wikiMainView" || to.name === "home" || to.name === "wikiManage") && !Object.hasOwn(to.params, "id")){
     try {
-      const response = await nav_util.getNavTreeRootNode(3);
+      // 获取默认的wiki category的id
+      let response = await get('/api/wiki/category/default');
+      if (!response.Success) {
+        console.error("Error when calling API '/api/wiki/category/default'!!", response.Errors);
+      }
+      const defaultCategoryId = response.Result.id
+      console.log('默认的wiki分类的id为: ', defaultCategoryId);
+
+      // 获取默认wiki category对应的node tree根节点对应的wiki
+      response = await nav_util.getNavTreeRootNode(defaultCategoryId);
       console.log('Got root node', response);
-      to.query.id = response.Result.target;
-      to.query.categoryId = 1;
-      console.log('router.beforEach: to.query.categoryId', to.query.categoryId);
+
+      // 设置路由的params，以便在组件中使用route.params.id与route.params.categoryId读取
+      to.params.id = response.Result.target;
+      to.params.categoryId = defaultCategoryId;
+
+      console.log('router.beforEach: to.query.categoryId', to.params.categoryId);
     } catch(error) {
       console.error('获取根节点失败！！！', error);
     }

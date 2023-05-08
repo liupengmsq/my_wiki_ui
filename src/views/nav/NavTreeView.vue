@@ -17,7 +17,7 @@
 import { useStore } from 'vuex';
 import router from "../../router/index.js"; 
 import { useRoute } from 'vue-router';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import * as nav_util from '../../utils/nav';
 
 import ConfirmDialog from '../../components/ConfirmDialog.vue'
@@ -26,7 +26,7 @@ import NavNodeCreateEditDialog from './NavNodeCreateEditDialog.vue'
 
 export default {
   name: 'AboutView',
-  props: ['showManageButtons', 'categoryId'],
+  props: ['showManageButtons'],
   components: {
     ConfirmDialog,
     MessageDialog,
@@ -54,7 +54,7 @@ export default {
       e.target.classList.add('nav-selected');
 
       // 状态保存到localStorage中
-      nav_util.select_nav_tree_node(e.target.id, props.categoryId);
+      nav_util.select_nav_tree_node(e.target.id, store.getters.getCurrentCategoryId);
     }
 
     const onClickExpandIconOnNavNode = (e) => {
@@ -65,10 +65,10 @@ export default {
         if(child.tagName === 'DIV') {
           if (child.style.display === "none") {
             child.style.display = "block";
-            nav_util.show_nav_tree_node(child.id, props.categoryId);
+            nav_util.show_nav_tree_node(child.id, store.getters.getCurrentCategoryId);
           } else {
             child.style.display = "none";
-            nav_util.unshow_nav_tree_node(child.id, props.categoryId);
+            nav_util.unshow_nav_tree_node(child.id, store.getters.getCurrentCategoryId);
           }
         }
       }
@@ -77,30 +77,32 @@ export default {
       if (e.target.classList.contains('icon-expanded')) {
         e.target.classList.remove('icon-expanded');
         e.target.classList.add('icon-collapsed');
-        nav_util.collapse_nav_tree_node(e.target.id, props.categoryId);
+        nav_util.collapse_nav_tree_node(e.target.id, store.getters.getCurrentCategoryId);
 
       } else if (e.target.classList.contains('icon-collapsed')) {
         e.target.classList.remove('icon-collapsed');
         e.target.classList.add('icon-expanded');
-        nav_util.expand_nav_tree_node(e.target.id, props.categoryId);
+        nav_util.expand_nav_tree_node(e.target.id, store.getters.getCurrentCategoryId);
       }
     }
 
     // 节点树的HTML
     const finalHtml = computed(() => store.getters.getFinalRawHTML );
 
+    const currentCategoryId = computed(() => store.getters.getCurrentCategoryId );
+
     // 初始化左侧导航栏
     onMounted(() => {
-      let categoryId = null;
       const route = useRoute();
-      if (route.query.categoryId) {
-        categoryId = route.query.categoryId;
-        localStorage.currentCategoryId = categoryId;
-      } else {
-        categoryId = localStorage.currentCategoryId;
-      }
-      store.dispatch('generateNavTree', { categoryId: categoryId });
+      store.dispatch('setCurrentCategoryId', { categoryId: route.params.categoryId })
+      store.dispatch('generateNavTree');
     });
+
+    // 当getCurrentCategoryId的值有变化时，重新刷新nav tree
+    watch(currentCategoryId, (newValue) => {
+      store.dispatch('generateNavTree');
+    })
+
 
     // 通过在vue的raw html的父节点上监控事件触发，来实现raw html的事件处理
     const onNodeClicked = async (e) => {
@@ -130,13 +132,13 @@ export default {
     // 点击管理按钮
     const onClickManageNavTreeButton = ()=> {
       nav_util.enableManageMode();
-      store.dispatch('generateNavTree', { categoryId: props.categoryId });
+      store.dispatch('generateNavTree', { categoryId: store.getters.getCurrentCategoryId });
     }
 
     // 点击返回按钮
     const onClickDisableManageNavTreeButton = ()=> {
       nav_util.disableManageMode();
-      store.dispatch('generateNavTree', { categoryId: props.categoryId });
+      store.dispatch('generateNavTree', { categoryId: store.getters.getCurrentCategoryId });
     }
 
     // 点击新建根节点按钮
@@ -155,9 +157,9 @@ export default {
           okButton: '新建',
           onClickOKButton: async function (nodeTitle, nodeURL) {
             if(forRootNode) {
-              return nav_util.createNavTreeNode(null, nodeTitle, nodeURL, props.categoryId, true);
+              return nav_util.createNavTreeNode(null, nodeTitle, nodeURL, store.getters.getCurrentCategoryId, true);
             } else {
-              return nav_util.createNavTreeNode(parentNodeId, nodeTitle, nodeURL, props.categoryId);
+              return nav_util.createNavTreeNode(parentNodeId, nodeTitle, nodeURL, store.getters.getCurrentCategoryId);
             }
           }
         });
@@ -307,6 +309,7 @@ export default {
   border-radius: 5px 0 0 5px;
   padding-top: .1rem;
   padding-bottom: .1rem;
+  overflow-x: auto;
 }
 .nav {
   font-size: .16rem;

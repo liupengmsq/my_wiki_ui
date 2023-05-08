@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="container__left">
-      <nav-tree-view :showManageButtons=true :categoryId=1 />
+      <nav-tree-view :showManageButtons=true />
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">
@@ -30,6 +30,7 @@
 <script>
 import { ref, reactive, onMounted } from 'vue';
 import NavTreeView from '../nav/NavTreeView.vue';
+import { useStore } from 'vuex';
 
 export default {
   name: 'WikiManageView',
@@ -38,6 +39,7 @@ export default {
   },
 
   setup() {
+    const store = useStore();
     const categoryList = reactive({
       list: []
     });
@@ -49,8 +51,8 @@ export default {
         category: 'test category 1',
       });
       temp.push({
-        id: 2,
-        category: 'test category 2',
+        id: 3,
+        category: 'test category 3',
       });
 
       return temp;
@@ -66,14 +68,14 @@ export default {
     }
 
     const editCategory = (categoryId) => {
-      alert(categoryId);
+      store.dispatch('setCurrentCategoryId', { categoryId: categoryId});
     }
 
     const deleteCategory = (categoryId) => {
       alert(categoryId);
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       // 实现横向与纵向可拖动的功能
       const resizable = (resizer) => {
         console.log("current resizer:", resizer);
@@ -242,6 +244,7 @@ export default {
   height: 2px;
   width: 100%;
 }
+
 .wrapper {
   overflow-x: auto;
 }

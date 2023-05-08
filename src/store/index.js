@@ -8,12 +8,17 @@ export default createStore({
     // 代表递归调用的当前节点
     currentNode: null,
     // 代表以上面的rootNode为根的树的html字符串
-    finalRawHtml: ''
+    finalRawHtml: '',
+
+    currentCategoryId: null
   },
   getters: {
     getFinalRawHTML (state) {
       return state.finalRawHtml;
     },
+    getCurrentCategoryId (state) {
+      return state.currentCategoryId;
+    }
   },
   mutations: {
     // 递归调用此方法，打印以当前state.currentNode为根节点的树
@@ -47,8 +52,7 @@ export default createStore({
   },
   actions: {
     // 生成新的节点树（从后端API读取树的信息，然后在前端构造出一棵树）
-    async generateNavTree({ commit, state }, payload) {
-      console.log('payload in generateNavTree', payload);
+    async generateNavTree({ commit, state }) {
       let manageMode = false;
       if (localStorage.manageMode) {
         manageMode = JSON.parse(localStorage.manageMode);
@@ -57,8 +61,7 @@ export default createStore({
       }
       console.warn("当前的管理模式为：", manageMode);
 
-      const { categoryId } = payload;
-      const root = await getNavTree(categoryId, manageMode);
+      const root = await getNavTree(state.currentCategoryId, manageMode);
       console.log('root from getNavTree()', root);
 
       // 用state全局对象保存树的根节点
@@ -71,6 +74,11 @@ export default createStore({
       console.log('state.rootNode', state.rootNode);
       commit('generateHTMLTree', { manageMode });
     },
+    setCurrentCategoryId({ state }, payload) {
+      const { categoryId } = payload;
+      console.log('setting current category id: ', categoryId);
+      state.currentCategoryId = categoryId;
+    }
   },
   modules: {
   }

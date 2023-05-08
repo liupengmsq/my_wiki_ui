@@ -60,6 +60,7 @@ export const getNavTree = async (categoryId, manageMode=false) => {
       node.content, 
       node.root, 
       node.parentId,
+      categoryId,
       node.target,
       nodeStatusList[node.id]?.shown, 
       nodeStatusList[node.id]?.expanded, 
@@ -83,7 +84,7 @@ export const getNavTree = async (categoryId, manageMode=false) => {
 }
 
 //定义一个节点的类Node
-function Node(id, depth, content, isRoot, parentId, target, shown=false, expanded=false, selected=false, manageMode=false) {
+function Node(id, depth, content, isRoot, parentId, categoryId, target, shown=false, expanded=false, selected=false, manageMode=false) {
   this.id = id;
   this.parentId = parentId;
 
@@ -92,6 +93,8 @@ function Node(id, depth, content, isRoot, parentId, target, shown=false, expande
 
   // 判断当前节点是否为根节点
   this.isRoot = isRoot;
+
+  this.categoryId = categoryId;
 
   // 当前节点的U超链接URL
   this.target = target;
@@ -119,7 +122,7 @@ function Node(id, depth, content, isRoot, parentId, target, shown=false, expande
   }
 
   // 节点附带的内容信息，这里使用超链接。用户点击此节点后，右侧应该显示对应的内容
-  this.content = `<a id="${this.id}" href="wiki?id=${this.target}" `;
+  this.content = `<a id="${this.id}" href="/wiki/${this.categoryId}/${this.target}" `;
   if (this.manageMode) {
     this.content += `style="display:inlin-block;" `;
   } else {

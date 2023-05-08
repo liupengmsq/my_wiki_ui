@@ -3,6 +3,8 @@
     <ul class="top-nav">
       <div class="top-nav-left-container">
         <li class="top-nav-left"><router-link to="/">主页</router-link></li>
+        <li class="top-nav-left"><router-link to="/wiki/1/1">Main</router-link></li>
+        <li class="top-nav-left"><router-link to="/wiki/3/1">Java</router-link></li>
       </div>
       <div class="top-nav-right-container">
         <li class="top-nav-right"><router-link to="/wikiManage">后台管理</router-link></li>
@@ -10,7 +12,8 @@
       </div>
     </ul>
   </div>
-  <router-view/>
+  <!-- router-view 设置:key为当前的url，这样每当url有变化的时候，都会重新加载router对应的component -->
+  <router-view :key="$route.fullPath"></router-view>
 </template>
 
 <script>
