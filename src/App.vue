@@ -2,12 +2,12 @@
   <div class="top-nav-container">
     <ul class="top-nav">
       <div class="top-nav-left-container">
-        <li class="top-nav-left"><router-link to="/">主页</router-link></li>
-        <li class="top-nav-left"><router-link to="/wiki/1/1">Main</router-link></li>
-        <li class="top-nav-left"><router-link to="/wiki/3/1">Java</router-link></li>
+        <router-link to="/"><li class="top-nav-left">主页</li></router-link>
+        <router-link to="/wiki/1/1"><li class="top-nav-left">Java编程</li></router-link>
+        <router-link to="/wiki/3/1"><li class="top-nav-left">Javascript编程</li></router-link>
       </div>
       <div class="top-nav-right-container">
-        <li class="top-nav-right"><router-link to="/wikiManage">后台管理</router-link></li>
+        <router-link to="/wikiManage"><li class="top-nav-right">后台管理</li></router-link>
         <li class="top-nav-right"><theme-switcher ref="themeSwitcher" /></li>
       </div>
     </ul>
@@ -86,6 +86,9 @@ export default {
 </script>
 
 <style scoped>
+a:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
 .top-nav-container {
   width: 100%;
   padding-left: auto;
@@ -116,6 +119,8 @@ export default {
   border: none;
   border-radius: 0.05rem;
   height: .26rem;
+  text-align: center;
+  user-select: none;
 }
 .top-nav-left:hover {
   background-color: var(--theme-dropdown-hover-background-color); 

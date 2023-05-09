@@ -89,10 +89,14 @@ export default {
     // 节点树的HTML
     const finalHtml = computed(() => store.getters.getFinalRawHTML );
 
+    // 监控当前wiki分类的id
     const currentCategoryId = computed(() => store.getters.getCurrentCategoryId );
 
     // 初始化左侧导航栏
     onMounted(() => {
+      if (!props.showManageButtons) {
+        nav_util.disableManageMode();
+      }
       const route = useRoute();
       store.dispatch('setCurrentCategoryId', { categoryId: route.params.categoryId })
       store.dispatch('generateNavTree');

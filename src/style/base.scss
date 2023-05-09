@@ -145,6 +145,10 @@ input[type=file] {
   color: var(--input-color);
 }
 
+button {
+  cursor: pointer;
+}
+
 // 对话框的淡入淡出
 .fade-enter-active,
 .fade-leave-active {
