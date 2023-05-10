@@ -5,28 +5,19 @@
         <b>{{ title }}</b>
       </div>
       <div class="content__container">
-        <div v-if="!forRootNode && !forEdit" class="content__container__group">
-          <label><b>父节点ID：</b><span>{{ parentNodeId }}</span></label>
-        </div>
-
-        <div v-if="forEdit" class="content__container__group">
-          <label><b>节点ID：</b><span>{{ currentNodeId }}</span></label>
+        <div class="content__container__group">
+          <div class="content__container__label">
+            <label><b>Wiki分类</b></label>
+          </div>
+          <input v-focus tabindex="1" v-model="categoryName" class="content__container__input" type="text" placeholder="输入Wiki分类名称" name="wikiCategoryName" required>
+          <p v-if="categoryErrorMessage != ''" class="content__container__error"> {{ categoryErrorMessage }}</p>
         </div>
 
         <div class="content__container__group">
           <div class="content__container__label">
-            <label><b>Wiki页面ID</b></label>
+            <input id="isDefault" tabindex="2" v-model="isDefault" class="content__container__checkbox" type="checkbox" name="isDefault" required>
+            <label for="isDefault"><b>默认分类</b></label>
           </div>
-          <input v-focus tabindex="1" v-model="navNodeURL" class="content__container__input" type="text" placeholder="输入链接" name="target" required>
-          <p v-if="navNodeURLErrorMessage != ''" class="content__container__error"> {{ navNodeURLErrorMessage }}</p>
-        </div>
-
-        <div class="content__container__group">
-          <div class="content__container__label">
-            <label><b>节点标题</b></label>
-          </div>
-          <input tabindex="2"  v-model="navNodeTitle" class="content__container__input" type="text" placeholder="输入标题" name="title" required>
-          <p v-if="navNodeTitleErrorMessage != ''" class="content__container__error"> {{ navNodeTitleErrorMessage }}</p>
         </div>
       </div>
 
@@ -49,14 +40,10 @@ export default {
     // Parameters that change depending on the type of dialogue
     const data = reactive({
       title: undefined,
-      forRootNode: false,
       forEdit: false,
-      parentNodeId: undefined,
-      currentNodeId: undefined,
-      navNodeURL: '',
-      navNodeTitle: '',
-      navNodeURLErrorMessage: '',
-      navNodeTitleErrorMessage: '',
+      categoryName: '',
+      categoryErrorMessage: '',
+      isDefault: false,
       okButton: '确定', 
       cancelButton: '取消', 
     })
@@ -73,17 +60,15 @@ export default {
     const show = (opts = {}) => {
       console.log('opts', opts);
       data.title = opts.title;
-      data.forRootNode = opts.forRootNode;
-      data.parentNodeId = opts.parentNodeId;
       data.forEdit = opts.forEdit;
-      data.navNodeURL = '';
-      data.navNodeTitle = '';
+      data.categoryName = '';
+      data.categoryErrorMessage = '';
+      data.isDefault = false;
 
       // for edit
       if (opts.forEdit) {
-        data.currentNodeId = opts.currentNodeId;
-        data.navNodeURL = opts.navNodeURL;
-        data.navNodeTitle = opts.navNodeTitle;
+        data.categoryName = opts.categoryName;
+        data.isDefault = opts.isDefault;
       }
 
       if (opts.okButton) {
@@ -110,22 +95,16 @@ export default {
         console.log("for root node:", data.forRootNode);
         // 输入验证
         let hasError = false;
-        if (data.navNodeURL === '') {
-          data.navNodeURLErrorMessage = '节点链接不能为空';
+        if (data.categoryName === '') {
+          data.categoryErrorMessage = 'Wiki分类不能为空';
           hasError = true;
         } else {
-          data.navNodeURLErrorMessage = '';
-        }
-        if (data.navNodeTitle === '') {
-          data.navNodeTitleErrorMessage = '节点标题不能为空';
-          hasError = true;
-        } else {
-          data.navNodeTitleErrorMessage = '';
+          data.categoryErrorMessage = '';
         }
         if (hasError) {
           return;
         }
-        const ret = await returnMethods.onClickOKButton(data.navNodeTitle, data.navNodeURL);
+        const ret = await returnMethods.onClickOKButton(data.categoryName, data.isDefault);
         baseDialog.value.close();
         returnMethods.resolvePromise(ret);
       } catch(error) {
@@ -141,27 +120,19 @@ export default {
 
     const { 
       title, 
-      forRootNode,
-      parentNodeId,
-      currentNodeId,
-      navNodeURL,
-      navNodeTitle,
-      navNodeURLErrorMessage,
-      navNodeTitleErrorMessage, 
+      categoryName,
+      categoryErrorMessage,
+      isDefault,
       okButton, 
       cancelButton ,
       forEdit
     } = toRefs(data);
 
     return {
-      title,
-      forRootNode,
-      parentNodeId,
-      currentNodeId,
-      navNodeURL,
-      navNodeTitle,
-      navNodeURLErrorMessage,
-      navNodeTitleErrorMessage, 
+      title, 
+      categoryName,
+      categoryErrorMessage,
+      isDefault,
       okButton,
       cancelButton,
       forEdit,
@@ -215,6 +186,10 @@ export default {
       color: #af0c0c;
       background-color: #ffe0e0;
       padding: .08rem;
+    }
+
+    &__checkbox {
+      margin-right: .1rem;
     }
 
     &__input {

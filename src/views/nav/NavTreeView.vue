@@ -278,7 +278,7 @@ export default {
         // 删除失败
         await messageDialog.value.show({
           title: '节点删除失败',
-          message: error.response.data.Errors[0],
+          message: error?.response?.data?.Errors[0],
           success: false,
         })
       }
@@ -309,8 +309,8 @@ export default {
 // 这里的css不能使用scoped局部样式, 因为我们要应用到raw html上
 .nav_container {
   background-color: var(--nav-container-background-color);
-  border-right: 1px solid #dddddd;
-  border-radius: 5px 0 0 5px;
+  border-right: .01rem solid #dddddd;
+  border-radius: .05rem 0 0 .05rem;
   padding-top: .1rem;
   padding-bottom: .1rem;
   overflow-x: auto;
@@ -319,7 +319,7 @@ export default {
   font-size: .16rem;
   line-height: .26rem;
   padding: 0 .2rem 0 .2rem;
-  width: 316px;
+  width: 3.16rem;
   box-sizing: border-box;
   user-select: none;
 }

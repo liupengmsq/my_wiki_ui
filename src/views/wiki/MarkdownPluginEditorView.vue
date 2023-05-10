@@ -433,7 +433,7 @@ export default {
 .container {
   display: flex;
   /* width: 100%; */
-  border: 1px solid #cbd5e0;
+  border: .01rem solid #cbd5e0;
   height: 95vh;
 }
 
@@ -465,13 +465,13 @@ export default {
   background-color: #cbd5e0;
   cursor: ew-resize;
   height: 100%;
-  width: 2px;
+  width: .02rem;
 }
 
 .resizer[data-direction='vertical'] {
   background-color: #cbd5e0;
   cursor: ns-resize;
-  height: 2px;
+  height: .02rem;
   width: 100%;
 }
 
@@ -487,8 +487,8 @@ export default {
   width: 93%;
   margin: .067rem ;
   padding: .12rem;
-  border: 1px solid #ccc;
-  border-radius: 3px;
+  border: .01rem solid #ccc;
+  border-radius: .03rem;
   font-size: .3rem;
   font-weight: 500;
 }
@@ -514,10 +514,10 @@ export default {
 }
 
 #div1 {
-  width: 350px;
-  height: 70px;
-  padding: 10px;
-  border: 1px solid #aaaaaa;
+  width: 3.50rem;
+  height: .7rem;
+  padding: .1rem;
+  border: .01rem solid #aaaaaa;
 }
 </style>
   

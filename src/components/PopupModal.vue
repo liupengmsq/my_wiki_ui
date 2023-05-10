@@ -58,9 +58,9 @@ export default {
 
 .window {
     background: #fff;
-    border-radius: 5px;
-    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 480px;
+    border-radius: .05rem;
+    box-shadow: .02rem .04rem .08rem rgba(0, 0, 0, 0.2);
+    max-width: 4.8rem;
     margin-left: auto;
     margin-right: auto;
     padding: 1rem;

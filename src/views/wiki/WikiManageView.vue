@@ -7,70 +7,235 @@
     <div class="container__right">
       <div class="wrapper">
         <router-link to="/markdownEditorPlugin">Markdown编辑器</router-link>
-        <h1>Wiki Category</h1>
-        <input class="add-category" type="button" value="新增" @click="addCategory">
-        <table>
-          <th>Id</th>
-          <th>名字</th>
-          <th>是否为默认分类</th>
-          <th class="th-operation">管理</th>
-          <tr v-for="item in categoryList.list" :key="item.id">
-            <td>{{ item.id }}</td>
-            <td>{{ item.categoryName }}</td>
-            <td>{{ item.default }}</td>
-            <td>
-              <input class="operation" type="button" @click="editCategory(item.id)" value="编辑">
-              <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
-              <input class="operation" type="button" @click="setToDefaultCategory(item.id)" value="设置为默认">
-            </td>
-          </tr>
-        </table>
+        <div class="sub-wrapper">
+          <h1>Wiki Category</h1>
+          <input class="add-category" type="button" value="新增" @click="addCategory">
+          <table>
+            <th @click="sort('id')">Id</th>
+            <th @click="sort('categoryName')">名字</th>
+            <th>默认分类</th>
+            <th class="th-operation">管理</th>
+            <tr v-for="item in categoryList.list" :key="item.id" @click="switchCategoryNavTree(item.id)">
+              <td>{{ item.id }}</td>
+              <td>{{ item.categoryName }}</td>
+              <td>{{ item.default ? "是":"否" }}</td>
+              <td>
+                <input class="operation" type="button" @click="editCategory(item.id, item.categoryName, item.default)"
+                  value="编辑">
+                <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
+
+  <confirm-dialog ref="confirmDialog"></confirm-dialog>
+  <message-dialog ref="messageDialog"></message-dialog>
+  <wiki-category-create-edit-dialog ref="wikiCategoryCreateEditDialog"></wiki-category-create-edit-dialog>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watchEffect } from 'vue';
 import NavTreeView from '../nav/NavTreeView.vue';
 import { useStore } from 'vuex';
 import { resizable } from '../../utils/resizer.js'
-import { get, deleteAPI, post } from '../../utils/request';
+import { get, deleteAPI, post, put } from '../../utils/request';
+import WikiCategoryCreateEditDialog from './WikiCategoryCreateEditDialog.vue'
+import MessageDialog from '../../components/MessageDialog.vue'
+import ConfirmDialog from '../../components/ConfirmDialog.vue';
 
 export default {
   name: 'WikiManageView',
   components: {
-    NavTreeView
+    NavTreeView,
+    MessageDialog,
+    WikiCategoryCreateEditDialog,
+    ConfirmDialog
   },
 
   setup() {
     const store = useStore();
+
+    //对话框dom对象的引用
+    const confirmDialog = ref(null);
+    const messageDialog = ref(null);
+    const wikiCategoryCreateEditDialog = ref(null);
+
+    // 代表wiki分类表格中的数据，响应式的
     const categoryList = reactive({
       list: []
     });
 
-    const getWikiCategory = async () => {
-      const response = await get('/api/wiki/category');
-      if (response.Success) {
-        categoryList.list = response.Result;
+    // 排序相关
+    const sortByProperty = (prop, reverse) => {
+      return (a, b) => {
+        if (typeof a[prop] === 'number') {
+          return !!reverse ? (a[prop] - b[prop]) * -1 : (a[prop] - b[prop]);
+        }
+        if (a[prop] < b[prop]) {
+          return reverse ? 1 : -1;
+        }
+        if (a[prop] > b[prop]) {
+          return reverse ? -1 : 1;
+        }
+        return 0;
+      };
+    };
+    let reverseSort = true;
+    const sort = (coloumn) => {
+      if (reverseSort) {
+        categoryList.list.sort(sortByProperty(coloumn, reverseSort))
+        reverseSort = false;
+      } else {
+        categoryList.list.sort(sortByProperty(coloumn, reverseSort))
+        reverseSort = true;
       }
     }
 
-    const addCategory = () => {
-      categoryList.list.push(
-        {
-          id: 3,
-          category: 'test category 3',
+    // 调用此方法会从后端API获取wiki category的数据，并绑定到categoryList这个响应式对象中，同时HTML dom也会自动更新
+    const getWikiCategory = async () => {
+      const response = await get('/api/wiki/category');
+      console.log(response);
+      if (response.Success) {
+        categoryList.list = response.Result;
+        console.log("categoryList.list is updated", categoryList.list);
+      }
+    }
+
+    const switchCategoryNavTree = (categoryId) => {
+      store.dispatch('setCurrentCategoryId', { categoryId: categoryId });
+    }
+
+    // 弹出对话框来创建新的wiki cateogry
+    const addCategory = async () => {
+      try {
+        const confirmResult = await wikiCategoryCreateEditDialog.value.show({
+          title: '新建Wiki分类',
+          forEdit: false,
+          categoryName: '',
+          isDefault: false,
+          onClickOKButton: async function (categoryName, isDefault) {
+            const postData = {
+              "categoryName": categoryName,
+              "default": isDefault
+            }
+            const response = await post('/api/wiki/category', postData);
+            console.log('response from post category', response);
+            return response
+          }
+        });
+        if (confirmResult.Success) {
+          // 创建成功
+          await messageDialog.value.show({
+            title: 'Wiki分类创建成功',
+            message: `Wiki分类 ${confirmResult?.Result?.categoryName} 创建成功`,
+            success: true,
+          });
+          getWikiCategory();
+        } else {
+          // 创建失败
+          await messageDialog.value.show({
+            title: 'Wiki分类创建失败',
+            message: confirmResult.Errors[0],
+            success: false,
+          })
         }
-      );
+      } catch (error) {
+        // 创建失败
+        await messageDialog.value.show({
+          title: 'Wiki分类创建失败',
+          message: error?.response?.data?.Errors[0],
+          success: false,
+        })
+      }
     }
 
-    const editCategory = (categoryId) => {
-      store.dispatch('setCurrentCategoryId', { categoryId: categoryId});
+    // 弹出对话框来编辑wiki cateogry
+    const editCategory = async (categoryId, categoryName, isDefault) => {
+      try {
+        const confirmResult = await wikiCategoryCreateEditDialog.value.show({
+          title: '编辑Wiki分类',
+          forEdit: true,
+          categoryName: categoryName,
+          isDefault: isDefault,
+          onClickOKButton: async function (categoryName, isDefault) {
+            const postData = {
+              "id": categoryId,
+              "categoryName": categoryName,
+              "default": isDefault
+            }
+            const response = await put('/api/wiki/category', postData);
+            console.log('response from post category', response);
+            return response
+          }
+        });
+        if (confirmResult.Success) {
+          // 编辑成功
+          await messageDialog.value.show({
+            title: 'Wiki分类编辑成功',
+            message: `Wiki分类 ${confirmResult?.Result?.categoryName} 编辑成功`,
+            success: true,
+          });
+          getWikiCategory();
+        } else {
+          // 编辑失败
+          await messageDialog.value.show({
+            title: 'Wiki分类编辑失败',
+            message: confirmResult.Errors[0],
+            success: false,
+          })
+        }
+      } catch (error) {
+        // 编辑失败
+        await messageDialog.value.show({
+          title: 'Wiki分类编辑失败',
+          message: error?.response?.data?.Errors[0],
+          success: false,
+        })
+      }
     }
 
-    const deleteCategory = (categoryId) => {
-      alert(categoryId);
+    //删除wiki category
+    const deleteCategory = async (categoryId) => {
+      try {
+        const confirmResult = await confirmDialog.value.show({
+          // 确认对话框的标题
+          title: '确认删除分类',
+          // 确认对话框的消息
+          message: `Wiki分类 ${categoryId} 将被删除！`,
+          // 点击确认按钮后执行的方法
+          onClickOKButton: async function () {
+            // 调用后端删除节点API
+            return await deleteAPI('/api/wiki/category/' + categoryId);
+          }
+        })
+        console.log('confirm dialog result:', confirmResult);
+        if (confirmResult.Success) {
+          // 删除成功
+          await messageDialog.value.show({
+            title: '删除成功',
+            message: `wiki分类 ${categoryId} 删除成功！`,
+            success: true,
+          });
+          getWikiCategory();
+        } else {
+          // 删除失败
+          await messageDialog.value.show({
+            title: '删除失败',
+            message: confirmResult.Errors[0],
+            success: false,
+          })
+        }
+      } catch (error) {
+        // 删除失败
+        await messageDialog.value.show({
+          title: '删除失败',
+          message: error?.response?.data?.Errors[0],
+          success: false,
+        })
+      }
     }
 
     onMounted(async () => {
@@ -84,10 +249,21 @@ export default {
 
     return {
       NavTreeView,
+
+      // wiki category相关
       categoryList,
       addCategory,
       editCategory,
-      deleteCategory
+      deleteCategory,
+      switchCategoryNavTree,
+
+      // 对话框
+      confirmDialog,
+      messageDialog,
+      wikiCategoryCreateEditDialog,
+
+      // 表格排序
+      sort,
     }
   }
 
@@ -96,10 +272,13 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  margin: .1rem;
+}
 .container {
   display: flex;
   /* width: 100%; */
-  border: 1px solid #cbd5e0;
+  border: .01rem solid #cbd5e0;
   height: 95vh;
 }
 
@@ -131,13 +310,13 @@ export default {
   background-color: #cbd5e0;
   cursor: ew-resize;
   height: 100%;
-  width: 2px;
+  width: .02rem;
 }
 
 .resizer[data-direction='vertical'] {
   background-color: #cbd5e0;
   cursor: ns-resize;
-  height: 2px;
+  height: .02rem;
   width: 100%;
 }
 
@@ -146,27 +325,32 @@ export default {
 }
 
 .add-category {
-  margin: 5px 0;
+  margin: .05rem 0;
 }
 
 table {
   border-collapse: collapse;
-  border: 1px solid #ccc;
+  border: .01rem solid #ccc;
   width: 100%;
 }
 
 th,
 td {
   text-align: left;
-  padding: 8px;
+  padding: .08rem;
+  cursor: pointer;
+}
+
+th {
+  background-color: var(--table-header-background-color);
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: var(--table-row-nth-event-background-color);
 }
 
 tr:hover {
-  background-color: skyblue;
+  background-color: var(--table-row-hover-background-color);
 }
 
 
@@ -175,6 +359,6 @@ tr:hover {
 }
 
 .operation {
-  margin-right: 5px;
+  margin-right: .05rem;
 }
 </style>

@@ -231,7 +231,7 @@ export default {
   background-color: var(--theme-dropdown-content-background-color);
 
   min-width: 1.3rem;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 .08rem .16rem 0 rgba(0,0,0,0.2);
   z-index: 1;
   border-radius: 0.05rem;
   padding: .08rem;

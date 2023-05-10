@@ -99,7 +99,7 @@ a:hover {
 .top-nav {
   display: flex;
   align-items: center;
-  max-width: 1760px;
+  max-width: 17.6rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

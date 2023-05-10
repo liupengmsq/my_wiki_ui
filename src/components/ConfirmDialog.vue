@@ -103,6 +103,7 @@ export default {
   font-size: .14rem;
   color: var(--dialog-desc-color);
   text-align: center;
+  overflow-x: auto;
 }
 
 .content__btns {

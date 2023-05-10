@@ -37,7 +37,7 @@ export default {
 
 .main {
   display: flex;
-  max-width: 1760px;
+  max-width: 17.6rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

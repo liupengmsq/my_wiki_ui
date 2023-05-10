@@ -79,8 +79,8 @@ export default {
   &--success {
     position: absolute;
     float: left;
-    top: .4rem;
-    left: .2rem;
+    top: .3rem;
+    left: .1rem;
     color: var(--dialog-sccess-icon-color);
     font-size: .5rem;
   }
@@ -104,12 +104,13 @@ export default {
 }
 
 .content__desc {
-  margin: 0.08rem 0.1rem 0.08rem 0.1rem;
+  margin: 0.15rem 0.1rem 0.08rem 0.1rem;
   font-size: .14rem;
   color: var(--dialog-desc-color);
   text-align: center;
   word-break: normal;
   white-space: normal;
+  overflow-x: auto;
 }
 .content__btns {
   display: flex;
