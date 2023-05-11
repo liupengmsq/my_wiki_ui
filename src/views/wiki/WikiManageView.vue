@@ -6,13 +6,12 @@
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right">
       <div class="wrapper">
-        <router-link to="/markdownEditorPlugin">Markdown编辑器</router-link>
         <div class="sub-wrapper">
-          <h1>Wiki Category</h1>
+          <h1>Wiki分类管理</h1>
           <input class="add-category" type="button" value="新增" @click="addCategory">
           <table>
-            <th @click="sort('id')">Id</th>
-            <th @click="sort('categoryName')">名字</th>
+            <th @click="sortForCategory('id')">Id</th>
+            <th @click="sortForCategory('categoryName')">名字</th>
             <th>默认分类</th>
             <th class="th-operation">管理</th>
             <tr v-for="item in categoryList.list" :key="item.id" @click="switchCategoryNavTree(item.id)" :class="{'tr-selected':item.id == trSelected}">
@@ -22,6 +21,31 @@
               <td>
                 <input class="operation" type="button" @click="editCategory(item.id, item.categoryName, item.default)"
                   value="编辑">
+                <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="sub-wrapper">
+          <h1>Wiki管理</h1>
+          <button><router-link to="/markdownEditorPlugin">新增</router-link></button>
+          <table>
+            <th @click="sortForWiki('id')">Id</th>
+            <th @click="sortForWiki('title')">标题</th>
+            <th @click="sortForWiki('categoryName')">分类</th>
+            <th @click="sortForWiki('createdDateTime')">创建时间</th>
+            <th @click="sortForWiki('updatedDateTime')">修改时间</th>
+            <th @click="sortForWiki('pageViewedNumber')">阅读次数</th>
+            <th class="th-operation">管理</th>
+            <tr v-for="item in wikiList.list" :key="item.id" @click="switchNavTreeInWikiTable(item.id, item.categoryId)" :class="{'tr-selected':item.id == trWikiSelected}">
+              <td>{{ item.id }}</td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.categoryName }}</td>
+              <td>{{ item.createdDateTime.toLocaleString() }}</td>
+              <td>{{ item.updatedDateTime.toLocaleString() }}</td>
+              <td>{{ item.pageViewedNumber}}</td>
+              <td>
+                <router-link :to="`/markdownEditorPlugin/${item.id}`">编辑</router-link>
                 <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
               </td>
             </tr>
@@ -63,11 +87,6 @@ export default {
     const messageDialog = ref(null);
     const wikiCategoryCreateEditDialog = ref(null);
 
-    // 代表wiki分类表格中的数据，响应式的
-    const categoryList = reactive({
-      list: []
-    });
-
     // 排序相关
     const sortByProperty = (prop, reverse) => {
       return (a, b) => {
@@ -83,14 +102,21 @@ export default {
         return 0;
       };
     };
-    let reverseSort = true;
-    const sort = (coloumn) => {
-      if (reverseSort) {
-        categoryList.list.sort(sortByProperty(coloumn, reverseSort))
-        reverseSort = false;
+
+    // 代表wiki category表格中的数据，响应式的
+    const categoryList = reactive({
+      list: []
+    });
+
+    // wiki category排序
+    let reverseSortForCategory = true;
+    const sortForCategory = (coloumn) => {
+      if (reverseSortForCategory) {
+        categoryList.list.sort(sortByProperty(coloumn, reverseSortForCategory))
+        reverseSortForCategory = false;
       } else {
-        categoryList.list.sort(sortByProperty(coloumn, reverseSort))
-        reverseSort = true;
+        categoryList.list.sort(sortByProperty(coloumn, reverseSortForCategory))
+        reverseSortForCategory = true;
       }
     }
 
@@ -241,6 +267,43 @@ export default {
       }
     }
 
+
+    const wikiList = reactive({
+      list: []
+    });
+
+    const getWikiList = async () => {
+      const response = await get('/api/wiki');
+      console.log(response);
+      if (response.Success) {
+        for (const item of response.Result) {
+          item.createdDateTime = new Date(item.createdDateTime);
+          item.updatedDateTime = new Date(item.updatedDateTime);
+        }
+        wikiList.list = response.Result;
+        console.log("wikiList.list is updated", wikiList.list);
+      } 
+    }
+
+    // 选中表中行后高亮选中的行，并切换左侧对应此分类的节点树
+    const trWikiSelected = ref(null);
+    const switchNavTreeInWikiTable = (id, categoryId) => {
+      trWikiSelected.value = id;
+      store.dispatch('setCurrentCategoryId', { categoryId: categoryId });
+    }
+
+    // wiki排序
+    let reverseSortForWiki = true;
+    const sortForWiki = (coloumn) => {
+      if (reverseSortForWiki) {
+        wikiList.list.sort(sortByProperty(coloumn, reverseSortForCategory))
+        reverseSortForWiki = false;
+      } else {
+        wikiList.list.sort(sortByProperty(coloumn, reverseSortForWiki))
+        reverseSortForWiki = true;
+      }
+    }
+
     onMounted(async () => {
       // 使所有的分割div可拖动
       document.querySelectorAll('.resizer').forEach(function (ele) {
@@ -248,6 +311,7 @@ export default {
       });
 
       getWikiCategory();
+      getWikiList();
     });
 
     return {
@@ -255,11 +319,17 @@ export default {
 
       // wiki category相关
       categoryList,
+      trSelected,
       addCategory,
       editCategory,
       deleteCategory,
-      trSelected,
       switchCategoryNavTree,
+
+      // wiki相关
+      wikiList,
+      trWikiSelected,
+      switchNavTreeInWikiTable,
+
 
       // 对话框
       confirmDialog,
@@ -267,7 +337,8 @@ export default {
       wikiCategoryCreateEditDialog,
 
       // 表格排序
-      sort,
+      sortForCategory,
+      sortForWiki,
     }
   }
 

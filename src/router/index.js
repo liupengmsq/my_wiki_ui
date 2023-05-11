@@ -15,7 +15,12 @@ const routes = [
   },
   {
     path: '/markdownEditorPlugin',
-    name: 'markdownEditorPlugin',
+    name: 'markdownEditorPluginForCreate',
+    component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
+  },
+  {
+    path: '/markdownEditorPlugin/:id',
+    name: 'markdownEditorPluginForEdit',
     component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
   },
   {

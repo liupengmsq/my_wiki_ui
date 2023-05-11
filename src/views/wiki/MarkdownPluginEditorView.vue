@@ -54,8 +54,9 @@
   
 <script>
 import { ref, onMounted, reactive, onBeforeUnmount, nextTick } from 'vue';
-import { get, deleteAPI, postForm, post } from '../../utils/request';
+import { get, put, deleteAPI, postForm, post } from '../../utils/request';
 import router from "../../router/index.js"; 
+import { useRoute } from 'vue-router';
 import ConfirmDialog from '../../components/ConfirmDialog.vue'
 import MessageDialog from '../../components/MessageDialog.vue'
 import { resizable } from '../../utils/resizer';
@@ -106,6 +107,29 @@ export default {
       }
     }
 
+    let wikiId = null;
+    let pageViewedNumber = 0;
+    let accessDateTime = null;
+
+    // 调用后端API获取wiki信息
+    const getWiki = async (id) => {
+      try {
+        wikiId = id;
+        const response = await get('/api/wiki/' + id);
+        if (response.Success) {
+          markdown.value = response?.Result?.markdownContent;
+          wikiTitle.value = response?.Result?.title;
+          selectedWikiCategoryItem.value = response?.Result?.categoryName;
+          pageViewedNumber = response?.Result?.pageViewedNumber;
+          accessDateTime = response?.Result?.accessDateTime;
+        } else {
+          console.error('Error when GET for /api/wiki/' + id, response);
+        }
+      } catch (error) {
+        console.error('Error when GET for /api/wiki/' + id, error);
+      }
+    }
+
     onMounted(() => {
       // 使所有的分割div可拖动
       document.querySelectorAll('.resizer').forEach(function (ele) {
@@ -120,6 +144,12 @@ export default {
 
       // 调用后端API获取wiki category信息
       getWikiCategories();
+
+      // 如果是编辑一个wiki，从路由获取传递过来的wiki id，并绑定页面进行展示
+      const route = useRoute();
+      if (route.params.id) {
+        getWiki(route.params.id)
+      }
     });
 
     // 左侧图片拖动到编辑区的功能实现
@@ -335,12 +365,22 @@ export default {
     // 保存wiki到后端
     const messageDialog = ref(null);
     const saveWiki = async () => {
-      console.log('Saving wiki...');
+      console.log('Saving/Updating wiki...');
       const postData = {
         title: wikiTitle.value,
         markdownContent: markdown.value,
         categoryName: selectedWikiCategoryItem.value
       };
+
+      const route = useRoute();
+      let forEdit = false;
+      if (wikiId) {
+        forEdit = true;
+        postData['id'] = wikiId;
+        postData['pageViewedNumber'] = pageViewedNumber;
+        postData['accessDateTime'] = accessDateTime;
+      }
+      console.log(postData);
 
       if (postData.title === "" || postData.title === "点击编辑标题") {
         await messageDialog.value.show({
@@ -370,11 +410,17 @@ export default {
       }
 
       try {
-        const response = await post('/api/wiki', postData);
+        let response = null;
+        if (forEdit) {
+          alert('For Edit!!');
+          response = await put('/api/wiki', postData);
+        } else {
+          response = await post('/api/wiki', postData);
+        }
         // 创建成功
         if (response.Success) {
           await messageDialog.value.show({
-            title: '创建成功',
+            title: forEdit? '更新成功' : '创建成功',
             message: 'Wiki ID: ' + response.Result.id,
             success: true,
           })
@@ -384,7 +430,7 @@ export default {
         } else {
           // 创建失败
           await messageDialog.value.show({
-            title: '创建失败',
+            title: forEdit? '更新失败' : '创建失败',
             message: error,
             success: false,
           })
@@ -392,7 +438,7 @@ export default {
       } catch (error) {
         // 创建失败
         await messageDialog.value.show({
-          title: '创建失败',
+          title: forEdit? '更新失败' : '创建失败',
           message: error,
           success: false,
         })
