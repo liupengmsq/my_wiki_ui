@@ -175,8 +175,8 @@ export default {
             message: `节点 ${confirmResult?.Result?.id} 创建成功！`,
             success: true,
           });
-          // 刷新页面
-          router.go(router.currentRoute);
+          // 刷新节点树
+          store.dispatch('generateNavTree');
         } else {
           // 创建失败
           await messageDialog.value.show({
@@ -221,8 +221,8 @@ export default {
             message: `节点 ${currentNodeId} 更改成功！`,
             success: true,
           });
-          // 刷新页面
-          router.go(router.currentRoute);
+          // 刷新节点树
+          store.dispatch('generateNavTree');
         } else {
           // 创建失败
           await messageDialog.value.show({
@@ -264,8 +264,8 @@ export default {
             message: `节点 ${nodeId} 删除成功！`,
             success: true,
           });
-          // 刷新页面
-          router.go(router.currentRoute);
+          // 刷新节点树
+          store.dispatch('generateNavTree');
         } else {
           // 删除失败
           await messageDialog.value.show({

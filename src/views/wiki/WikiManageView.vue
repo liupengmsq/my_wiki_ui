@@ -15,7 +15,7 @@
             <th @click="sort('categoryName')">名字</th>
             <th>默认分类</th>
             <th class="th-operation">管理</th>
-            <tr v-for="item in categoryList.list" :key="item.id" @click="switchCategoryNavTree(item.id)">
+            <tr v-for="item in categoryList.list" :key="item.id" @click="switchCategoryNavTree(item.id)" :class="{'tr-selected':item.id == trSelected}">
               <td>{{ item.id }}</td>
               <td>{{ item.categoryName }}</td>
               <td>{{ item.default ? "是":"否" }}</td>
@@ -104,7 +104,10 @@ export default {
       }
     }
 
+    // 选中表中行后高亮选中的行，并切换左侧对应此分类的节点树
+    const trSelected = ref(null);
     const switchCategoryNavTree = (categoryId) => {
+      trSelected.value = categoryId;
       store.dispatch('setCurrentCategoryId', { categoryId: categoryId });
     }
 
@@ -255,6 +258,7 @@ export default {
       addCategory,
       editCategory,
       deleteCategory,
+      trSelected,
       switchCategoryNavTree,
 
       // 对话框
@@ -353,6 +357,10 @@ tr:hover {
   background-color: var(--table-row-hover-background-color);
 }
 
+.tr-selected {
+  background-color: var(--table-row-hover-background-color) !important;
+  color: #fff;
+}
 
 .th-operation {
   width: 10%;
