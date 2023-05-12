@@ -44,7 +44,7 @@
       </div>
       <v-md-editor ref="editor" class="md-editor" v-model="markdown" mode="editor" @save="saveWiki"
         :toolbar="toolbar" 
-        left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table | link image code | save restore"
+        left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table | link image code | save restore | back"
       ></v-md-editor>
     </div>
   </div>
@@ -359,7 +359,15 @@ export default {
             };
           });
         },
+      },
+    back: {
+      title: '返回管理页面',
+      icon: 'v-md-icon-tip',
+      action() {
+        // 返回管理页面
+        router.back();
       }
+    }
     });
 
     // 保存wiki到后端
@@ -412,7 +420,6 @@ export default {
       try {
         let response = null;
         if (forEdit) {
-          alert('For Edit!!');
           response = await put('/api/wiki', postData);
         } else {
           response = await post('/api/wiki', postData);
@@ -425,8 +432,8 @@ export default {
             success: true,
           })
 
-          // 返回首页
-          router.push({name: 'home'});
+          // 返回管理页面
+          router.back();
         } else {
           // 创建失败
           await messageDialog.value.show({

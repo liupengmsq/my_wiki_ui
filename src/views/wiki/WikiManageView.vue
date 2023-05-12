@@ -32,6 +32,7 @@
           <table>
             <th @click="sortForWiki('id')">Id</th>
             <th @click="sortForWiki('title')">标题</th>
+            <th>Page URL</th>
             <th @click="sortForWiki('categoryName')">分类</th>
             <th @click="sortForWiki('createdDateTime')">创建时间</th>
             <th @click="sortForWiki('updatedDateTime')">修改时间</th>
@@ -40,6 +41,7 @@
             <tr v-for="item in wikiList.list" :key="item.id" @click="switchNavTreeInWikiTable(item.id, item.categoryId)" :class="{'tr-selected':item.id == trWikiSelected}">
               <td>{{ item.id }}</td>
               <td>{{ item.title }}</td>
+              <td class="wiki-url"><a :href=item.target target="_blank">{{item.target}}</a></td>
               <td>{{ item.categoryName }}</td>
               <td>{{ item.createdDateTime.toLocaleString() }}</td>
               <td>{{ item.updatedDateTime.toLocaleString() }}</td>
@@ -279,6 +281,7 @@ export default {
         for (const item of response.Result) {
           item.createdDateTime = new Date(item.createdDateTime);
           item.updatedDateTime = new Date(item.updatedDateTime);
+          item.target = `/wiki/${item.categoryId}/${item.id}`;
         }
         wikiList.list = response.Result;
         console.log("wikiList.list is updated", wikiList.list);
@@ -474,6 +477,9 @@ tr:hover {
   background-color: var(--table-row-hover-background-color) !important;
   color: #fff;
 }
+.tr-selected>td>a {
+  color: #fff;
+}
 
 .th-operation {
   width: 10%;
@@ -481,5 +487,10 @@ tr:hover {
 
 .operation {
   margin-right: .05rem;
+}
+
+button {
+  color: var(--button-color);
+  background-color: var(--button-background-color);
 }
 </style>
