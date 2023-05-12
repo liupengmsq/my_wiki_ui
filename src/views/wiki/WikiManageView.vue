@@ -8,7 +8,7 @@
       <div class="wrapper">
         <div class="sub-wrapper">
           <h1>Wiki分类管理</h1>
-          <input class="add-category" type="button" value="新增" @click="addCategory">
+          <input class="add-button" type="button" value="新增" @click="addCategory">
           <table>
             <th @click="sortForCategory('id')">Id</th>
             <th @click="sortForCategory('categoryName')">名字</th>
@@ -28,7 +28,7 @@
         </div>
         <div class="sub-wrapper">
           <h1>Wiki管理</h1>
-          <button><router-link to="/markdownEditorPlugin">新增</router-link></button>
+          <button class="add-button"><router-link to="/markdownEditorPlugin">新增</router-link></button>
           <table>
             <th @click="sortForWiki('id')">Id</th>
             <th @click="sortForWiki('title')">标题</th>
@@ -45,8 +45,8 @@
               <td>{{ item.updatedDateTime.toLocaleString() }}</td>
               <td>{{ item.pageViewedNumber}}</td>
               <td>
-                <router-link :to="`/markdownEditorPlugin/${item.id}`">编辑</router-link>
-                <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
+                <button class="operation" ><router-link :to="`/markdownEditorPlugin/${item.id}`">编辑</router-link></button>
+                <button class="operation" @click="deleteWiki(item.id)">删除</button>
               </td>
             </tr>
           </table>
@@ -285,6 +285,47 @@ export default {
       } 
     }
 
+     //删除wiki category
+     const deleteWiki = async (wikiId) => {
+      try {
+        const confirmResult = await confirmDialog.value.show({
+          // 确认对话框的标题
+          title: '确认删除Wiki',
+          // 确认对话框的消息
+          message: `Wiki ${wikiId} 将被删除！`,
+          // 点击确认按钮后执行的方法
+          onClickOKButton: async function () {
+            // 调用后端删除wiki API
+            return await deleteAPI('/api/wiki/' + wikiId);
+          }
+        })
+        console.log('confirm dialog result:', confirmResult);
+        if (confirmResult.Success) {
+          // 删除成功
+          await messageDialog.value.show({
+            title: '删除成功',
+            message: `wiki ${wikiId} 删除成功！`,
+            success: true,
+          });
+          getWikiList();
+        } else {
+          // 删除失败
+          await messageDialog.value.show({
+            title: '删除失败',
+            message: confirmResult.Errors[0],
+            success: false,
+          })
+        }
+      } catch (error) {
+        // 删除失败
+        await messageDialog.value.show({
+          title: '删除失败',
+          message: error?.response?.data?.Errors[0],
+          success: false,
+        })
+      }
+    }
+
     // 选中表中行后高亮选中的行，并切换左侧对应此分类的节点树
     const trWikiSelected = ref(null);
     const switchNavTreeInWikiTable = (id, categoryId) => {
@@ -328,6 +369,7 @@ export default {
       // wiki相关
       wikiList,
       trWikiSelected,
+      deleteWiki,
       switchNavTreeInWikiTable,
 
 
@@ -399,7 +441,7 @@ export default {
   overflow-x: auto;
 }
 
-.add-category {
+.add-button {
   margin: .05rem 0;
 }
 
