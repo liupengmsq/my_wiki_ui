@@ -13,13 +13,15 @@
             <th @click="sortForCategory('id')">Id</th>
             <th @click="sortForCategory('categoryName')">名字</th>
             <th>默认分类</th>
+            <th>状态</th>
             <th class="th-operation">管理</th>
             <tr v-for="item in categoryList.list" :key="item.id" @click="switchCategoryNavTree(item.id)" :class="{'tr-selected':item.id == trSelected}">
               <td>{{ item.id }}</td>
               <td>{{ item.categoryName }}</td>
               <td>{{ item.default ? "是":"否" }}</td>
+              <td>{{ item.active ? "激活":"未激活" }}</td>
               <td>
-                <input class="operation" type="button" @click="editCategory(item.id, item.categoryName, item.default)"
+                <input class="operation" type="button" @click="editCategory(item.id, item.categoryName, item.default, item.active)"
                   value="编辑">
                 <input class="operation" type="button" @click="deleteCategory(item.id)" value="删除">
               </td>
@@ -147,10 +149,12 @@ export default {
           forEdit: false,
           categoryName: '',
           isDefault: false,
-          onClickOKButton: async function (categoryName, isDefault) {
+          isActive: false,
+          onClickOKButton: async function (categoryName, isDefault, isActive) {
             const postData = {
               "categoryName": categoryName,
-              "default": isDefault
+              "default": isDefault,
+              "active": isActive
             }
             const response = await post('/api/wiki/category', postData);
             console.log('response from post category', response);
@@ -184,18 +188,20 @@ export default {
     }
 
     // 弹出对话框来编辑wiki cateogry
-    const editCategory = async (categoryId, categoryName, isDefault) => {
+    const editCategory = async (categoryId, categoryName, isDefault, isActive) => {
       try {
         const confirmResult = await wikiCategoryCreateEditDialog.value.show({
           title: '编辑Wiki分类',
           forEdit: true,
           categoryName: categoryName,
           isDefault: isDefault,
-          onClickOKButton: async function (categoryName, isDefault) {
+          isActive: isActive,
+          onClickOKButton: async function (categoryName, isDefault, isActive) {
             const postData = {
               "id": categoryId,
               "categoryName": categoryName,
-              "default": isDefault
+              "default": isDefault,
+              "active": isActive,
             }
             const response = await put('/api/wiki/category', postData);
             console.log('response from post category', response);

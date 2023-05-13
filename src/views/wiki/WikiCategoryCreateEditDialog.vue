@@ -18,6 +18,10 @@
             <input id="isDefault" tabindex="2" v-model="isDefault" class="content__container__checkbox" type="checkbox" name="isDefault" required>
             <label for="isDefault"><b>默认分类</b></label>
           </div>
+          <div class="content__container__label">
+            <input id="isActive" tabindex="3" v-model="isActive" class="content__container__checkbox" type="checkbox" name="isActive" required>
+            <label for="isActive"><b>激活</b></label>
+          </div>
         </div>
       </div>
 
@@ -44,6 +48,7 @@ export default {
       categoryName: '',
       categoryErrorMessage: '',
       isDefault: false,
+      isActive: false,
       okButton: '确定', 
       cancelButton: '取消', 
     })
@@ -64,11 +69,13 @@ export default {
       data.categoryName = '';
       data.categoryErrorMessage = '';
       data.isDefault = false;
+      data.isActive = false;
 
       // for edit
       if (opts.forEdit) {
         data.categoryName = opts.categoryName;
         data.isDefault = opts.isDefault;
+        data.isActive = opts.isActive;
       }
 
       if (opts.okButton) {
@@ -104,7 +111,7 @@ export default {
         if (hasError) {
           return;
         }
-        const ret = await returnMethods.onClickOKButton(data.categoryName, data.isDefault);
+        const ret = await returnMethods.onClickOKButton(data.categoryName, data.isDefault, data.isActive);
         baseDialog.value.close();
         returnMethods.resolvePromise(ret);
       } catch(error) {
@@ -123,6 +130,7 @@ export default {
       categoryName,
       categoryErrorMessage,
       isDefault,
+      isActive,
       okButton, 
       cancelButton ,
       forEdit
@@ -133,6 +141,7 @@ export default {
       categoryName,
       categoryErrorMessage,
       isDefault,
+      isActive,
       okButton,
       cancelButton,
       forEdit,

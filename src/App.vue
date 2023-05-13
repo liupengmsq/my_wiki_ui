@@ -2,12 +2,13 @@
   <div class="top-nav-container">
     <ul class="top-nav">
       <div class="top-nav-left-container">
-        <router-link to="/"><li class="top-nav-left">主页</li></router-link>
-        <router-link to="/wiki/1/1"><li class="top-nav-left">Java编程</li></router-link>
-        <router-link to="/wiki/3/1"><li class="top-nav-left">Javascript编程</li></router-link>
+        <a @click="goToMainPage"><li class="top-nav-left" :class="{'router-selected':mainPageSelected}">主页</li></a>
+        <template v-for="item in categoryList.list" :key="item.id" >
+          <a v-if="item.active" @click="gotoRouter(item.id)"><li class="top-nav-left" :class="{'router-selected':item.id == routerSelected}">{{ item.categoryName }}</li></a>
+        </template>
       </div>
       <div class="top-nav-right-container">
-        <router-link to="/wikiManage"><li class="top-nav-right">后台管理</li></router-link>
+        <a @click="goToManagePage"><li class="top-nav-right" :class="{'router-selected':managePageSelected}">后台管理</li></a>
         <li class="top-nav-right"><theme-switcher ref="themeSwitcher" /></li>
       </div>
     </ul>
@@ -21,12 +22,29 @@ import { onMounted, reactive, ref } from 'vue';
 import light from 'highlight.js/styles/github.css?url'
 import dark from 'highlight.js/styles/dark.css?url'
 import ThemeSwitcher from './views/header/ThemeSwitcher.vue';
+import { useRouter } from 'vue-router';
+import { get } from './utils/request';
 
 export default {
   components: { ThemeSwitcher },
 
   setup() {
     const themeSwitcher = ref(null);
+    const router = useRouter();
+
+    // 代表wiki category表格中的数据，响应式的
+    const categoryList = reactive({
+      list: []
+    });
+
+    const getWikiCategory = async () => {
+      const response = await get('/api/wiki/category');
+      console.log(response);
+      if (response.Success) {
+        categoryList.list = response.Result;
+        console.log("categoryList.list is updated", categoryList.list);
+      }
+    }
 
     onMounted(() => {
       console.log('dark', dark);
@@ -60,6 +78,8 @@ export default {
           themeSwitcher.value.switchToDarkTheme();
         }
       }
+
+      getWikiCategory();
     });
 
     const activateDarkMode = () => {
@@ -78,8 +98,45 @@ export default {
       theme.setAttribute('href', light);
     }
 
+    const routerSelected = ref(null);
+    const managePageSelected = ref(false);
+    const mainPageSelected = ref(false);
+
+    const gotoRouter = (id) => {
+      mainPageSelected.value = false;
+      managePageSelected.value = false;
+      routerSelected.value = id;
+      router.push(`/wiki/${id}/1`);
+    }
+
+    const unSelecteAllCategories = () => {
+      routerSelected.value = null;
+    }
+
+    const goToMainPage = () => {
+      routerSelected.value = null;
+      managePageSelected.value = false;
+      mainPageSelected.value = true;
+      router.push('/');
+    }
+
+    const goToManagePage = () => {
+      routerSelected.value = null;
+      mainPageSelected.value = false;
+      managePageSelected.value = true;
+      router.push('/wikiManage');
+    }
+
     return {
-      themeSwitcher
+      themeSwitcher,
+      categoryList,
+      gotoRouter,
+      routerSelected,
+      unSelecteAllCategories,
+      mainPageSelected,
+      managePageSelected,
+      goToMainPage,
+      goToManagePage
     }
   }
 }
@@ -124,6 +181,10 @@ a:hover {
 }
 .top-nav-left:hover {
   background-color: var(--theme-dropdown-hover-background-color); 
+}
+
+.router-selected {
+  background-color: var(--theme-dropdown-hover-background-color) !important; 
 }
 
 .top-nav-right-container {
