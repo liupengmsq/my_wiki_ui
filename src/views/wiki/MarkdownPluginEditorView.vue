@@ -2,11 +2,15 @@
   <div class="container">
     <div class="container__left">
       <div>
-        <div>选择图片文件：<input id="fileUpload" type="file" name="filename"></div>
+        <div>选择图片文件：<input id="fileUpload" type="file" name="filename" multiple></div>
         <div>
-          <label>修改上传后的文件名：</label><input type="text" v-model="renamedFileName">
+          <label>新的文件名前缀：</label><input type="text" v-model="renamedFileNamePrefix">
           <input type="button" value="上传图片" @click="uploadImage">
-          <input type="button" value="刷新列表" @click="getImageList">
+        </div>
+        <div>
+          <label>搜索图片：</label><input type="text" v-model="fileNameForSearch">
+          <input type="button" value="搜索" @click="searchImageFileName">
+          <input type="button" value="清空" @click="clearSearchImageFileName()">
         </div>
       </div>
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
@@ -75,7 +79,8 @@ export default {
     // 引用编辑器组件的对象
     const editor = ref(null);
 
-    const renamedFileName = ref("");
+    const renamedFileNamePrefix = ref("");
+    const fileNameForSearch = ref("");
     const imageData = reactive({
       list: []
     });
@@ -192,9 +197,14 @@ export default {
     }
 
     // 从后端api获取图片列表
-    const getImageList = async () => {
+    const getImageList = async (imageFileNameForSearch = '') => {
       try {
-        const response = await get('/api/wiki/image');
+        let response = null;
+        if (imageFileNameForSearch === '') {
+          response = await get('/api/wiki/image');
+        } else {
+          response = await get('/api/wiki/image', {fileName: imageFileNameForSearch});
+        }
         console.log('GET /api/wiki/image', response);
         if (response.Success) {
           // 转换api返回的UTC时间为本地浏览器时间
@@ -231,7 +241,7 @@ export default {
         const response = await deleteAPI('/api/wiki/image/' + fileName);
         if (response.Success) {
           // refresh image list after deletion
-          getImageList();
+          getImageList(fileNameForSearch.value);
         } else {
           console.error('Error when Delete for /api/wiki/image', response);
         }
@@ -242,37 +252,51 @@ export default {
 
     // 上传图片到后端
     const uploadImage = async () => {
-      let fileUploadEle = document.querySelector('#fileUpload').files[0];
-      console.log('fileUpload', fileUploadEle);
-      console.log('fileUpload.name', fileUploadEle.name);
+      console.log('file upload -- multiple files: ', document.querySelector('#fileUpload').files);
 
-      // 修改原上传图片的名字
-      if (renamedFileName.value !== '') {
-        console.log('Renamed image file name', renamedFileName.value);
-        fileUploadEle = renameFile(fileUploadEle, renamedFileName.value)
-        console.log('After rename', fileUploadEle);
-      }
-      try {
-        const response = await postForm('/api/wiki/image', fileUploadEle);
-        if (response.Success) {
-          console.log('Response from upload image', response);
-        } else {
+      for (let fileUploadEle of document.querySelector('#fileUpload').files) {
+        // let fileUploadEle = document.querySelector('#fileUpload').files[0];
+        console.log('fileUpload', fileUploadEle);
+        console.log('fileUpload.name', fileUploadEle.name);
+
+        // 修改原上传图片的名字
+        if (renamedFileNamePrefix.value !== '') {
+          console.log('Renamed image file name prefix', renamedFileNamePrefix.value);
+          fileUploadEle = renameFile(fileUploadEle, renamedFileNamePrefix.value)
+          console.log('After rename', fileUploadEle);
+        }
+        try {
+          const response = await postForm('/api/wiki/image', fileUploadEle);
+          if (response.Success) {
+            console.log('Response from upload image', response);
+          } else {
+            console.error('Error when uploading image', error);
+          }
+        } catch (error) {
           console.error('Error when uploading image', error);
         }
-      } catch (error) {
-        console.error('Error when uploading image', error);
       }
-      getImageList();
+
+      getImageList(fileNameForSearch.value);
       document.querySelector('#fileUpload').value = '';
-      renamedFileName.value = '';
+      renamedFileNamePrefix.value = '';
     }
 
     // 重命名图片文件对象
     const renameFile = (originalFile, newName) => {
-      return new File([originalFile], newName, {
+      return new File([originalFile], newName + originalFile.name, {
         type: originalFile.type,
         lastModified: originalFile.lastModified,
       });
+    }
+
+    const searchImageFileName = () => {
+      getImageList(fileNameForSearch.value)
+    }
+
+    const clearSearchImageFileName = () => {
+      fileNameForSearch.value = '';
+      getImageList()
     }
 
     // wiki标题相关
@@ -462,7 +486,10 @@ export default {
       getImageList,
       deleteImage,
       uploadImage,
-      renamedFileName,
+      renamedFileNamePrefix,
+      fileNameForSearch,
+      searchImageFileName,
+      clearSearchImageFileName,
       saveToLocalStorage,
       info,
       toolbar,
