@@ -27,6 +27,11 @@ const routes = [
     path: '/wikiManage',
     name: 'wikiManage',
     component: () => import('../views/wiki/WikiManageView.vue')
+  },
+  {
+    path: '/search',
+    name: 'wikiSearchResult',
+    component: () => import('../views/wiki/WikiSearchResult.vue')
   }
 ]
 

@@ -32,6 +32,11 @@ export default {
     const themeSwitcher = ref(null);
     const router = useRouter();
 
+    // 代表当前顶部导航栏选中的是哪个项目
+    const routerSelected = ref(null); //选中的是顶部导航栏除了主页与后台管理以外的项目
+    const managePageSelected = ref(false); //true为选中的是后台管理的项目
+    const mainPageSelected = ref(false); //true为选中的是主页的项目
+
     // 代表wiki category表格中的数据，响应式的
     const categoryList = reactive({
       list: []
@@ -79,6 +84,27 @@ export default {
         }
       }
 
+      // 页面加载时从localStorage读取顶部导航栏已经选中的是哪个项目，并设置上去
+      if (localStorage.routerSelected) {
+        if (localStorage.routerSelected === 'main') {
+          routerSelected.value = null;
+          managePageSelected.value = false;
+          mainPageSelected.value = true;
+        } else if (localStorage.routerSelected === 'manage') {
+          routerSelected.value = null;
+          mainPageSelected.value = false;
+          managePageSelected.value = true;
+        } else {
+          mainPageSelected.value = false;
+          managePageSelected.value = false;
+          routerSelected.value = localStorage.routerSelected;
+        }
+      } else {
+        routerSelected.value = null;
+        managePageSelected.value = false;
+        mainPageSelected.value = true;
+      }
+
       getWikiCategory();
     });
 
@@ -98,14 +124,12 @@ export default {
       theme.setAttribute('href', light);
     }
 
-    const routerSelected = ref(null);
-    const managePageSelected = ref(false);
-    const mainPageSelected = ref(false);
 
     const gotoRouter = (id) => {
       mainPageSelected.value = false;
       managePageSelected.value = false;
       routerSelected.value = id;
+      localStorage.routerSelected = id;
       router.push(`/wiki/${id}/1`);
     }
 
@@ -117,6 +141,7 @@ export default {
       routerSelected.value = null;
       managePageSelected.value = false;
       mainPageSelected.value = true;
+      localStorage.routerSelected = 'main';
       router.push('/');
     }
 
@@ -124,6 +149,7 @@ export default {
       routerSelected.value = null;
       mainPageSelected.value = false;
       managePageSelected.value = true;
+      localStorage.routerSelected = 'manage';
       router.push('/wikiManage');
     }
 
