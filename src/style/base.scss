@@ -197,3 +197,16 @@ pre {
 #app .v-md-editor-preview img {
   width: 100%;
 }
+
+// 高亮显示搜索页面的结果
+.highlightTextSearchTitle {
+  font-weight: 500;
+  color: #e28327;
+  background-color: #fefceb;
+}
+
+.highlightTextSearchContent {
+  font-weight: bold;
+  color: #e28327;
+  background-color: #fefceb;
+}
