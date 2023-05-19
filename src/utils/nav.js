@@ -312,3 +312,19 @@ export const enableManageMode = () => {
 export const disableManageMode = () => {
   localStorage.manageMode = false;
 }
+
+export const getCurrentSelectedNodeId = (categoryId) => {
+  const localStorageKeyName = 'nodeStatusList-' + categoryId;
+  let currentSelectedNodeId = null;
+  if (localStorage[localStorageKeyName]) {
+    // 存在缓存的nodeStatus，读取出来
+    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+    const nodeIds = Object.keys(nodeStatusList);
+    nodeIds.forEach(nodeIdInStorage => {
+      if (nodeStatusList[nodeIdInStorage].selected) {
+        currentSelectedNodeId = nodeIdInStorage;
+      }
+    }) 
+  } 
+  return currentSelectedNodeId;
+}

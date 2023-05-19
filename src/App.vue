@@ -28,6 +28,7 @@ import dark from 'highlight.js/styles/dark.css?url'
 import ThemeSwitcher from './views/header/ThemeSwitcher.vue';
 import { useRouter } from 'vue-router';
 import { get } from './utils/request';
+import * as nav_util from './utils/nav';
 
 export default {
   components: { ThemeSwitcher },
@@ -129,12 +130,31 @@ export default {
       theme.setAttribute('href', light);
     }
 
-    const gotoRouter = (id) => {
+    const gotoRouter = async (id) => {
+      let wikiId = null;
+
+      // 先从localStorage中获取当前选中的节点id
+      const currentSelectedNodeIdInLocalStorage = nav_util.getCurrentSelectedNodeId(id);
+      if (currentSelectedNodeIdInLocalStorage) {
+        // 使用节点id获取wiki的id
+        const currentNodeInfo = await nav_util.getNavTreeNodeById(currentSelectedNodeIdInLocalStorage);
+        wikiId = currentNodeInfo.Result.target;
+      } else {
+        // 如果localStorage中没有选中的节点id，获取节点树中的根节点
+        const response = await nav_util.getNavTreeRootNode(id);
+        wikiId = 1;
+        if (response.Success) {
+          wikiId = response.Result.target;
+        } else {
+          console.error(`Error when getting root node for category id ${id}`);
+        }
+      }
+
       mainPageSelected.value = false;
       managePageSelected.value = false;
       routerSelected.value = id;
       localStorage.routerSelected = id;
-      router.push(`/wiki/${id}/1`);
+      router.push(`/wiki/${id}/${wikiId}`);
     }
 
     const unSelecteAllCategories = () => {
@@ -255,9 +275,9 @@ a:hover {
   max-width: 100%;
   padding: 4px 6px;
   border: 1px solid #ddd;
-  background: #fff;
-  color: #444;
   border-radius: 4px;
   font-size: .15rem;
+  background-color: var(--input-background-color);
+  color: var(--input-color);
 }
 </style>

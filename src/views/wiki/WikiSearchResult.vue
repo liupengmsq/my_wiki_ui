@@ -13,7 +13,7 @@
         </div>
         <div class="search-item" v-for="item in wikiSearchResultList.list" :key="item.id">
           <div class="search-title" v-html="highlightSearchResult(item.search, item.title, true)"></div>
-          <div class="search-content" v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div>
+          <div v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div>
         </div>
       </div>
     </div>
@@ -139,10 +139,10 @@ export default {
   max-width: 100%;
   padding: 4px 6px;
   border: 1px solid #ddd;
-  background: #fff;
-  color: #444;
   border-radius: 4px;
   font-size: .15rem;
+  background-color: var(--input-background-color);
+  color: var(--input-color);
 }
 
 .search-button {
@@ -187,7 +187,5 @@ export default {
 .search-title {
   font-weight: 500;
 }
-
-.search-content {}
 </style>
     
