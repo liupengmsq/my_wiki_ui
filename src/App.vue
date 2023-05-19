@@ -8,7 +8,11 @@
         </template>
       </div>
       <div class="top-nav-right-container">
-        <a @click="goToManagePage"><li class="top-nav-right" :class="{'router-selected':managePageSelected}">后台管理</li></a>
+        <div class="search-input-wrapper">
+          <i class="icon-search"></i>
+          <input class="search-input" v-focus tabindex="1" v-model="searchText" type="text" placeholder="输入搜索内容" @keydown.enter="search" required>
+        </div>
+        <!-- <a @click="goToManagePage"><li class="top-nav-right" :class="{'router-selected':managePageSelected}">后台管理</li></a> -->
         <li class="top-nav-right"><theme-switcher ref="themeSwitcher" /></li>
       </div>
     </ul>
@@ -31,6 +35,7 @@ export default {
   setup() {
     const themeSwitcher = ref(null);
     const router = useRouter();
+    const searchText = ref('');
 
     // 代表当前顶部导航栏选中的是哪个项目
     const routerSelected = ref(null); //选中的是顶部导航栏除了主页与后台管理以外的项目
@@ -124,7 +129,6 @@ export default {
       theme.setAttribute('href', light);
     }
 
-
     const gotoRouter = (id) => {
       mainPageSelected.value = false;
       managePageSelected.value = false;
@@ -145,13 +149,17 @@ export default {
       router.push('/');
     }
 
-    const goToManagePage = () => {
-      routerSelected.value = null;
-      mainPageSelected.value = false;
-      managePageSelected.value = true;
-      localStorage.routerSelected = 'manage';
-      router.push('/wikiManage');
+    const search = () => {
+      router.push(`/search/${searchText.value}`);''
     }
+
+    // const goToManagePage = () => {
+    //   routerSelected.value = null;
+    //   mainPageSelected.value = false;
+    //   managePageSelected.value = true;
+    //   localStorage.routerSelected = 'manage';
+    //   router.push('/wikiManage');
+    // }
 
     return {
       themeSwitcher,
@@ -162,7 +170,8 @@ export default {
       mainPageSelected,
       managePageSelected,
       goToMainPage,
-      goToManagePage
+      searchText,
+      search
     }
   }
 }
@@ -216,6 +225,7 @@ a:hover {
 .top-nav-right-container {
   margin-left: auto;
   display: flex;
+  align-items: center;
 }
 
 .top-nav-right {
@@ -232,5 +242,22 @@ a:hover {
 
 .top-nav-right:hover {
   background-color: var(--theme-dropdown-hover-background-color); 
+}
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-input {
+  width: 80%;
+  margin-right: .1rem;
+  padding-left: .3rem !important;
+  height: .18rem;
+  max-width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #444;
+  border-radius: 4px;
+  font-size: .15rem;
 }
 </style>

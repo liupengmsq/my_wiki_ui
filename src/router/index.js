@@ -24,12 +24,17 @@ const routes = [
     component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
   },
   {
-    path: '/wikiManage',
+    path: '/manage',
     name: 'wikiManage',
     component: () => import('../views/wiki/WikiManageView.vue')
   },
   {
     path: '/search',
+    name: 'wikiSearchResultWithoutInputArg',
+    component: () => import('../views/wiki/WikiSearchResult.vue')
+  },
+  {
+    path: '/search/:searchText',
     name: 'wikiSearchResult',
     component: () => import('../views/wiki/WikiSearchResult.vue')
   }

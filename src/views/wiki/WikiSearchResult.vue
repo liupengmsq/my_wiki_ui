@@ -2,11 +2,14 @@
     <div class="wrapper">
       <div class="main theme-a">
         <div class="search-wrapper">
-        <div class="search-input-wrapper">
-          <i class="icon-search"></i>
-          <input class="search-input" v-focus tabindex="1" v-model="searchText" type="text" placeholder="输入搜索内容" @keydown.enter="search" required>
-          <input type="button" value="search" @click="search">
-        </div>
+          <div class="search-input-wrapper">
+            <i class="icon-search"></i>
+            <input class="search-input" v-focus tabindex="1" v-model="searchText" type="text" placeholder="输入搜索内容" @keydown.enter="search" required>
+            <button class="search-button" type="submit" @click="search">Search</button>
+          </div>
+          <div v-if="showWarning" class="search-warning">
+            <p>没有搜索到任何内容！！</p>
+          </div>
           <div class="search-item" v-for="item in wikiSearchResultList.list" :key="item.id">
             <div class="search-title" v-html="highlightSearchResult(item.search, item.title, true)"></div>
             <div class="search-content" v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div>
@@ -17,7 +20,8 @@
   </template>
     
   <script>
-import { reactive, toRefs, ref } from 'vue';
+import { reactive, toRefs, ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { get, deleteAPI, post, put } from '../../utils/request';
 import { marked } from 'marked';
 
@@ -25,11 +29,22 @@ import { marked } from 'marked';
     name: 'WikiSearchResult',
     setup() {
       const searchText = ref("");
+      const showWarning = ref(false);
       const wikiSearchResultList = reactive({
         list: []
       });
 
+      onMounted(() => {
+        // 使用router传来的参数searchText来直接触发搜索
+        const route = useRoute();
+        if (route.params.searchText) {
+          searchText.value = route.params.searchText;
+          search();
+        }
+      });
+
       const search = async () => {
+        showWarning.value = false;
         wikiSearchResultList.list = [];
         if (!searchText.value) {
           return;
@@ -51,6 +66,10 @@ import { marked } from 'marked';
             }
           }
         } 
+
+        if (wikiSearchResultList.list.length == 0) {
+          showWarning.value = true;
+        }
       }
 
       const createElementFromHTML = (htmlString) => {
@@ -74,6 +93,7 @@ import { marked } from 'marked';
 
       return {
         searchText,
+        showWarning,
         search,
         wikiSearchResultList,
         highlightSearchResult
@@ -114,13 +134,48 @@ import { marked } from 'marked';
     width: 80%;
     margin-right: .1rem;
     padding-left: .3rem !important;
-    height: .2rem;
+    height: .18rem;
     max-width: 100%;
     padding: 4px 6px;
     border: 1px solid #ddd;
     background: #fff;
     color: #444;
     border-radius: 4px;
+    font-size: .15rem;
+  }
+
+  .search-button {
+    background-color: #00a8e6;
+    color: #fff;
+    font-size: .15rem;
+    text-decoration: none;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 4px;
+    vertical-align: middle;
+    text-decoration: none;
+    text-align: center;
+    padding: .05rem .15rem;
+  }
+  .search-button:hover {
+    background-color: #35b3ee;
+    color: #fff;
+  }
+
+  .search-button:active {
+    background-color: #0091ca;
+    color: #fff;
+  }
+
+  .search-warning {
+    background: #fffceb;
+    color: #e28327;
+    border-color: rgba(226,131,39,.3);
+    margin-bottom: .15rem;
+    padding: .05rem;
+    border: .01rem solid rgba(45,112,145,.3);
+    border-radius: .04rem;
+    text-shadow: 0 .01rem 0 #fff;
   }
 
   .search-item {
