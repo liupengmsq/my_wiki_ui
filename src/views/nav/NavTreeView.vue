@@ -54,7 +54,7 @@ export default {
       e.target.classList.add('nav-selected');
 
       // 状态保存到localStorage中
-      nav_util.select_nav_tree_node(e.target.id, store.getters.getCurrentCategoryId);
+      nav_util.selectNavTreeNode(e.target.id, store.getters.getCurrentCategoryId);
     }
 
     const onClickExpandIconOnNavNode = (e) => {
@@ -106,7 +106,6 @@ export default {
     watch(currentCategoryId, (newValue) => {
       store.dispatch('generateNavTree');
     })
-
 
     // 通过在vue的raw html的父节点上监控事件触发，来实现raw html的事件处理
     const onNodeClicked = async (e) => {

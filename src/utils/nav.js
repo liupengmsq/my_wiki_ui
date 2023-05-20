@@ -228,7 +228,7 @@ const set_expanded_status = (nodeId, status, categoryId) => {
 }
 
 // 将nodeId指定的节点, 在localStorage中存放的selected状态更改为true, 并将其他节点的selected更改为false
-export const select_nav_tree_node = (nodeId, categoryId) => {
+export const selectNavTreeNode = (nodeId, categoryId) => {
   const localStorageKeyName = 'nodeStatusList-' + categoryId;
   if (localStorage[localStorageKeyName]) {
     const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
@@ -251,6 +251,22 @@ export const select_nav_tree_node = (nodeId, categoryId) => {
   } else {
     console.log('No node id in local storage:', nodeId);
   }
+}
+
+export const getCurrentSelectedNodeId = (categoryId) => {
+  const localStorageKeyName = 'nodeStatusList-' + categoryId;
+  let currentSelectedNodeId = null;
+  if (localStorage[localStorageKeyName]) {
+    // 存在缓存的nodeStatus，读取出来
+    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+    const nodeIds = Object.keys(nodeStatusList);
+    nodeIds.forEach(nodeIdInStorage => {
+      if (nodeStatusList[nodeIdInStorage].selected) {
+        currentSelectedNodeId = nodeIdInStorage;
+      }
+    }) 
+  } 
+  return currentSelectedNodeId;
 }
 
 export const createNavTreeNode = async (parentNodeId, title, url, categoryId, isRoot=false) => {
@@ -313,18 +329,16 @@ export const disableManageMode = () => {
   localStorage.manageMode = false;
 }
 
-export const getCurrentSelectedNodeId = (categoryId) => {
-  const localStorageKeyName = 'nodeStatusList-' + categoryId;
-  let currentSelectedNodeId = null;
-  if (localStorage[localStorageKeyName]) {
-    // 存在缓存的nodeStatus，读取出来
-    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
-    const nodeIds = Object.keys(nodeStatusList);
-    nodeIds.forEach(nodeIdInStorage => {
-      if (nodeStatusList[nodeIdInStorage].selected) {
-        currentSelectedNodeId = nodeIdInStorage;
-      }
-    }) 
-  } 
-  return currentSelectedNodeId;
+// 通过节点的分类ID与Target（即wiki id）来寻找对应的节点id（如果有多个节点id，返回第一个）
+export const getNodeIdByCategoryIdAndTarget = async (categoryId, target) => {
+  // 从后端API "GET /api/nav" 获取导航栏信息
+  const response = await get(`/api/nav/tree`, {categoryId: categoryId, target: target});
+  console.log('Get from /api/nav', response);
+  if (!response.Success) {
+    console.error("Error when calling API '/api/nav/tree'!!", response.Errors);
+  }
+  if (response.Result.length > 0) {
+    // 返回API返回的数据中第一个节点的ID
+    return response.Result[0].id;
+  }
 }

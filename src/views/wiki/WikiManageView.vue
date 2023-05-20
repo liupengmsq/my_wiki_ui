@@ -43,7 +43,7 @@
             <tr v-for="item in wikiList.list" :key="item.id" @click="switchNavTreeInWikiTable(item.id, item.categoryId)" :class="{'tr-selected':item.id == trWikiSelected}">
               <td>{{ item.id }}</td>
               <td>{{ item.title }}</td>
-              <td class="wiki-url"><a :href=item.target target="_blank">{{item.target}}</a></td>
+              <td class="wiki-url"><router-link :to="item.target" target="_blank">{{item.target}}</router-link></td>
               <td>{{ item.categoryName }}</td>
               <td>{{ item.createdDateTime.toLocaleString() }}</td>
               <td>{{ item.updatedDateTime.toLocaleString() }}</td>
@@ -287,7 +287,7 @@ export default {
         for (const item of response.Result) {
           item.createdDateTime = new Date(item.createdDateTime);
           item.updatedDateTime = new Date(item.updatedDateTime);
-          item.target = `/wiki/${item.categoryId}/${item.id}`;
+          item.target = `/wiki/${item.categoryId}/${item.id}?self=false`;
         }
         wikiList.list = response.Result;
         console.log("wikiList.list is updated", wikiList.list);
