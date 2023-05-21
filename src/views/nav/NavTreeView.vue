@@ -15,7 +15,6 @@
 
 <script>
 import { useStore } from 'vuex';
-import router from "../../router/index.js"; 
 import { useRoute } from 'vue-router';
 import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import * as nav_util from '../../utils/nav';
@@ -99,11 +98,17 @@ export default {
       }
       const route = useRoute();
       store.dispatch('setCurrentCategoryId', { categoryId: route.params.categoryId })
-      store.dispatch('generateNavTree');
+      store.dispatch('setHardSelectNode', { hardSelectNode: route.query.hardSelect })
+      store.dispatch('setCurrentWikiId', { currentWikiId: route.params.id })
+      
+      // 这里注释掉了在页面加载时就重新刷新tree的功能，因为下面的 "watch(currentCategoryId, (newValue, oldValue)" 方法总是会在页面加载时被触发
+      // 原因是currentCategoryId是存储在vuex中的，而vuex中的state的值在重新刷新页面的时候就会被清空，那么currentCategoryId的值就会从一个null值变为一个categoryId的值
+      // 这种变化就会被watch方法捕获到，从而刷新tree结构
+      // store.dispatch('generateNavTree');
     });
 
     // 当getCurrentCategoryId的值有变化时，重新刷新nav tree
-    watch(currentCategoryId, (newValue) => {
+    watch(currentCategoryId, (newValue, oldValue) => {
       store.dispatch('generateNavTree');
     })
 

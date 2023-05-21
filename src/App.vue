@@ -58,7 +58,6 @@ export default {
     }
 
     onMounted(() => {
-      console.log('dark', dark);
       var theme = document.getElementById('theme');
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add("dark")
@@ -132,6 +131,7 @@ export default {
 
     const gotoRouter = async (id) => {
       let wikiId = null;
+      let hardSelect = false;
 
       // 先从localStorage中获取当前选中的节点id
       const currentSelectedNodeIdInLocalStorage = nav_util.getCurrentSelectedNodeId(id);
@@ -139,10 +139,12 @@ export default {
         // 使用节点id获取wiki的id
         const currentNodeInfo = await nav_util.getNavTreeNodeById(currentSelectedNodeIdInLocalStorage);
         wikiId = currentNodeInfo.Result.target;
+        hardSelect = false;
       } else {
         // 如果localStorage中没有选中的节点id，获取节点树中的根节点
         const response = await nav_util.getNavTreeRootNode(id);
         wikiId = 1;
+        hardSelect = true;
         if (response.Success) {
           wikiId = response.Result.target;
         } else {
@@ -154,7 +156,7 @@ export default {
       managePageSelected.value = false;
       routerSelected.value = id;
       localStorage.routerSelected = id;
-      router.push(`/wiki/${id}/${wikiId}`);
+      router.push({ path: `/wiki/${id}/${wikiId}`, query: { hardSelect: hardSelect } });
     }
 
     const unSelecteAllCategories = () => {

@@ -12,7 +12,7 @@
           <p>没有搜索到任何内容！！</p>
         </div>
         <div class="search-item" v-for="item in wikiSearchResultList.list" :key="item.id">
-          <div class="search-title" v-html="highlightSearchResult(item.search, item.title, true)"></div>
+          <div class="search-title" @click="goToWikiPage(item)" v-html="highlightSearchResult(item.search, item.title, true)"></div>
           <div v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div>
         </div>
       </div>
@@ -22,7 +22,7 @@
     
 <script>
 import { reactive, toRefs, ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { get, deleteAPI, post, put } from '../../utils/request';
 import { marked } from 'marked';
 
@@ -31,6 +31,7 @@ export default {
   setup() {
     const searchText = ref("");
     const showWarning = ref(false);
+    const router = useRouter();
     const wikiSearchResultList = reactive({
       list: []
     });
@@ -73,6 +74,12 @@ export default {
       }
     }
 
+    const goToWikiPage = (item) => {
+      localStorage.routerSelected = item.categoryId;
+      const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+      window.open(routeData.href, '_blank');
+    }
+
     const createElementFromHTML = (htmlString) => {
       var div = document.createElement('div');
       div.innerHTML = htmlString.trim();
@@ -97,7 +104,8 @@ export default {
       showWarning,
       search,
       wikiSearchResultList,
-      highlightSearchResult
+      highlightSearchResult,
+      goToWikiPage
     }
   }
 }
@@ -186,6 +194,7 @@ export default {
 
 .search-title {
   font-weight: 500;
+  cursor: pointer;
 }
 </style>
     

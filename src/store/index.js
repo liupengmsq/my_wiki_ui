@@ -10,7 +10,11 @@ export default createStore({
     // 代表以上面的rootNode为根的树的html字符串
     finalRawHtml: '',
 
-    currentCategoryId: null
+    currentCategoryId: null,
+
+    //hardSelectNode为true代表需要将currentWikiId所对应的nodeId置为选中状态
+    hardSelectNode: null,
+    currentWikiId: null
   },
   getters: {
     getFinalRawHTML (state) {
@@ -61,7 +65,14 @@ export default createStore({
       }
       console.warn("当前的管理模式为：", manageMode);
 
-      const root = await getNavTree(state.currentCategoryId, manageMode);
+      let root = null;
+      // alert(state.hardSelectNode);
+      // alert(state.currentWikiId);
+      if(state.hardSelectNode === 'true') {
+        root = await getNavTree(state.currentCategoryId, manageMode, state.currentWikiId);
+      } else {
+        root = await getNavTree(state.currentCategoryId, manageMode);
+      }
       console.log('root from getNavTree()', root);
 
       // 用state全局对象保存树的根节点
@@ -78,6 +89,16 @@ export default createStore({
       const { categoryId } = payload;
       console.log('setting current category id: ', categoryId);
       state.currentCategoryId = categoryId;
+    },
+    setHardSelectNode({ state }, payload) {
+      const { hardSelectNode } = payload;
+      console.log('setting hardSelectNode: ', hardSelectNode);
+      state.hardSelectNode = hardSelectNode;
+    },
+    setCurrentWikiId({ state }, payload) {
+      const { currentWikiId } = payload;
+      console.log('setting currentWikiId: ', currentWikiId);
+      state.currentWikiId = currentWikiId;
     }
   },
   modules: {

@@ -43,7 +43,8 @@
             <tr v-for="item in wikiList.list" :key="item.id" @click="switchNavTreeInWikiTable(item.id, item.categoryId)" :class="{'tr-selected':item.id == trWikiSelected}">
               <td>{{ item.id }}</td>
               <td>{{ item.title }}</td>
-              <td class="wiki-url"><router-link :to="item.target" target="_blank">{{item.target}}</router-link></td>
+              <!-- <td class="wiki-url"><router-link :to="item.target" target="_blank">{{item.target}}</router-link></td> -->
+              <td class="wiki-url"><a @click="goToWikiPage(item)" href="#">{{item.target}}</a></td>
               <td>{{ item.categoryName }}</td>
               <td>{{ item.createdDateTime.toLocaleString() }}</td>
               <td>{{ item.updatedDateTime.toLocaleString() }}</td>
@@ -73,6 +74,7 @@ import { get, deleteAPI, post, put } from '../../utils/request';
 import WikiCategoryCreateEditDialog from './WikiCategoryCreateEditDialog.vue'
 import MessageDialog from '../../components/MessageDialog.vue'
 import ConfirmDialog from '../../components/ConfirmDialog.vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'WikiManageView',
@@ -85,6 +87,7 @@ export default {
 
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     //对话框dom对象的引用
     const confirmDialog = ref(null);
@@ -275,7 +278,6 @@ export default {
       }
     }
 
-
     const wikiList = reactive({
       list: []
     });
@@ -287,11 +289,17 @@ export default {
         for (const item of response.Result) {
           item.createdDateTime = new Date(item.createdDateTime);
           item.updatedDateTime = new Date(item.updatedDateTime);
-          item.target = `/wiki/${item.categoryId}/${item.id}?self=false`;
+          item.target = `/wiki/${item.categoryId}/${item.id}`;
         }
         wikiList.list = response.Result;
         console.log("wikiList.list is updated", wikiList.list);
       } 
+    }
+
+    const goToWikiPage = (item) => {
+      localStorage.routerSelected = item.categoryId;
+      const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+      window.open(routeData.href, '_blank');
     }
 
      //删除wiki category
@@ -377,6 +385,7 @@ export default {
 
       // wiki相关
       wikiList,
+      goToWikiPage,
       trWikiSelected,
       deleteWiki,
       switchNavTreeInWikiTable,

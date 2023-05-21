@@ -1,7 +1,7 @@
 import { get, deleteAPI, post, put } from '../utils/request';
 
 // 从后端API与localStorage构造出节点的树结构，并返回根节点
-export const getNavTree = async (categoryId, manageMode=false) => {
+export const getNavTree = async (categoryId, manageMode=false, wikiId=null) => {
   // 从后端API "GET /api/nav" 获取导航栏信息
   const response = await get(`/api/nav/tree`, {categoryId: categoryId});
   console.log('Get from /api/nav', response);
@@ -50,6 +50,15 @@ export const getNavTree = async (categoryId, manageMode=false) => {
   } else {
     //如果存在，将local storage中的信息读入nodeStatusList中
     nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+  }
+
+  if (!manageMode && wikiId) {
+    // alert('manageMode: ' + manageMode);
+    // alert('wikiId: ' + wikiId);
+    const navNodeId = await getNodeIdByCategoryIdAndTarget(categoryId, wikiId);
+    console.log('navNodeId', navNodeId);
+    selectNavTreeNodeForInternalObject(nodeStatusList, navNodeId);
+    selectNavTreeNode(navNodeId, categoryId);
   }
 
   // 使用后端API的节点信息与localStorage中存放的节点信息构造出Node对象
@@ -251,6 +260,21 @@ export const selectNavTreeNode = (nodeId, categoryId) => {
   } else {
     console.log('No node id in local storage:', nodeId);
   }
+}
+
+const selectNavTreeNodeForInternalObject = (nodeStatusList, nodeId) => {
+  if (nodeStatusList[nodeId]) {
+      // 将当前节点置为选中状态
+      nodeStatusList[nodeId].selected = true;
+
+      // 将其他节点置为非选中状态
+      const nodeIds = Object.keys(nodeStatusList);
+      nodeIds.forEach(nodeIdInStorage => {
+          if (nodeIdInStorage != nodeId) {
+              nodeStatusList[nodeIdInStorage].selected = false;
+          }
+      })
+  } 
 }
 
 export const getCurrentSelectedNodeId = (categoryId) => {
