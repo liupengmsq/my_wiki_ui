@@ -5,8 +5,8 @@ import { get } from '../utils/request';
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: () => import('../views/wiki/WikiMainView.vue')
+    name: 'BlogMainView',
+    component: () => import('../views/blog/BlogMainView.vue')
   },
   {
     path: '/wiki/:categoryId/:id',
