@@ -90,19 +90,19 @@ export default {
       }
 
       // 页面加载时从localStorage读取顶部导航栏已经选中的是哪个项目，并设置上去
-      if (localStorage.routerSelected) {
-        if (localStorage.routerSelected === 'main') {
+      if (sessionStorage.routerSelected) {
+        if (sessionStorage.routerSelected === 'main') {
           routerSelected.value = null;
           managePageSelected.value = false;
           mainPageSelected.value = true;
-        } else if (localStorage.routerSelected === 'manage') {
+        } else if (sessionStorage.routerSelected === 'manage') {
           routerSelected.value = null;
           mainPageSelected.value = false;
           managePageSelected.value = true;
         } else {
           mainPageSelected.value = false;
           managePageSelected.value = false;
-          routerSelected.value = localStorage.routerSelected;
+          routerSelected.value = sessionStorage.routerSelected;
         }
       } else {
         routerSelected.value = null;
@@ -155,7 +155,7 @@ export default {
       mainPageSelected.value = false;
       managePageSelected.value = false;
       routerSelected.value = id;
-      localStorage.routerSelected = id;
+      sessionStorage.routerSelected = id;
       router.push({ path: `/wiki/${id}/${wikiId}`, query: { hardSelect: hardSelect } });
     }
 
@@ -167,7 +167,7 @@ export default {
       routerSelected.value = null;
       managePageSelected.value = false;
       mainPageSelected.value = true;
-      localStorage.routerSelected = 'main';
+      sessionStorage.routerSelected = 'main';
       router.push('/');
     }
 
@@ -179,7 +179,7 @@ export default {
     //   routerSelected.value = null;
     //   mainPageSelected.value = false;
     //   managePageSelected.value = true;
-    //   localStorage.routerSelected = 'manage';
+    //   sessionStorage.routerSelected = 'manage';
     //   router.push('/wikiManage');
     // }
 

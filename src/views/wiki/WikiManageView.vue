@@ -297,7 +297,7 @@ export default {
     }
 
     const goToWikiPage = (item) => {
-      localStorage.routerSelected = item.categoryId;
+      sessionStorage.routerSelected = item.categoryId;
       const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
       window.open(routeData.href, '_blank');
     }

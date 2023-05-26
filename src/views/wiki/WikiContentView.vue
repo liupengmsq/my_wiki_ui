@@ -58,11 +58,11 @@ export default {
     
 <style lang="scss" scoped>
 .content {
-  flex: 1;
   background-color: var(--wiki-content-background-color);
   padding: .1rem .1rem .1rem .1rem;
   border-radius: 0 .05rem .05rem 0;
   overflow: hidden; // 处理图片image撑大父div的情况
+  width: 14.23rem;
 }
 
 .title {
