@@ -28,28 +28,28 @@ export const getNavTree = async (categoryId, manageMode=false, wikiId=null) => {
 
   let nodeStatusList = {};
   const localStorageKeyName = 'nodeStatusList-' + categoryId;
-  if (localStorage[localStorageKeyName]) {
+  if (sessionStorage[localStorageKeyName]) {
     // 存在缓存的nodeStatus，读取出来
-    nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+    nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
     if (Object.keys(nodeStatusList).length != response.Result.length) {
       // 如果服务端有节点更改，重新产生一份默认状态的nodeStatus，写入缓存
       console.warn('节点在服务端有新的更改, 需要刷新localStorage!!');
       nodeStatusList = initNodeStatusList(response.Result)
-      localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+      sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
     }
   } else {
     // 不存在缓存的nodeStatus，初始化一份写入缓存
       nodeStatusList = initNodeStatusList(response.Result)
-      localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+      sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
   }
 
-  if (!localStorage[localStorageKeyName] || Object.keys(nodeStatusList).length != response.Result.length) {
+  if (!sessionStorage[localStorageKeyName] || Object.keys(nodeStatusList).length != response.Result.length) {
       console.warn('节点在服务端有新的更改, 需要刷新localStorage!!');
       nodeStatusList = initNodeStatusList(response.Result)
-      localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+      sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
   } else {
     //如果存在，将local storage中的信息读入nodeStatusList中
-    nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+    nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
   }
 
   if (!manageMode && wikiId) {
@@ -196,15 +196,15 @@ export const unshow_nav_tree_node = (nodeId, categoryId) => {
 
 const set_shown_status = (nodeId, status, categoryId) => {
   const localStorageKeyName = 'nodeStatusList-' + categoryId; 
-  if (localStorage[localStorageKeyName]) {
-    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+  if (sessionStorage[localStorageKeyName]) {
+    const nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
     if (nodeStatusList[nodeId]) {
         nodeStatusList[nodeId].shown = status;
     } else {
         console.log('No node id in local storage:', nodeId);
     }
     // 将更改的数据存放回localStorage
-    localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+    sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
   } else {
     console.log('No node id in local storage:', nodeId);
   }
@@ -222,15 +222,15 @@ export const collapse_nav_tree_node = (nodeId, categoryId) => {
 
 const set_expanded_status = (nodeId, status, categoryId) => {
   const localStorageKeyName = 'nodeStatusList-' + categoryId;
-  if (localStorage[localStorageKeyName]) {
-    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+  if (sessionStorage[localStorageKeyName]) {
+    const nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
     if (nodeStatusList[nodeId]) {
         nodeStatusList[nodeId].expanded = status;
     } else {
         console.log('No node id in local storage:', nodeId);
     }
     // 将更改的数据存放回localStorage
-    localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+    sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
   } else {
     console.log('No node id in local storage:', nodeId);
   }
@@ -239,8 +239,8 @@ const set_expanded_status = (nodeId, status, categoryId) => {
 // 将nodeId指定的节点, 在localStorage中存放的selected状态更改为true, 并将其他节点的selected更改为false
 export const selectNavTreeNode = (nodeId, categoryId) => {
   const localStorageKeyName = 'nodeStatusList-' + categoryId;
-  if (localStorage[localStorageKeyName]) {
-    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+  if (sessionStorage[localStorageKeyName]) {
+    const nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
     if (nodeStatusList[nodeId]) {
         // 将当前节点置为选中状态
         nodeStatusList[nodeId].selected = true;
@@ -256,7 +256,7 @@ export const selectNavTreeNode = (nodeId, categoryId) => {
         console.log('No node id in local storage:', nodeId);
     }
     // 将更改的数据存放回localStorage
-    localStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
+    sessionStorage[localStorageKeyName] = JSON.stringify(nodeStatusList);
   } else {
     console.log('No node id in local storage:', nodeId);
   }
@@ -280,9 +280,9 @@ const selectNavTreeNodeForInternalObject = (nodeStatusList, nodeId) => {
 export const getCurrentSelectedNodeId = (categoryId) => {
   const localStorageKeyName = 'nodeStatusList-' + categoryId;
   let currentSelectedNodeId = null;
-  if (localStorage[localStorageKeyName]) {
+  if (sessionStorage[localStorageKeyName]) {
     // 存在缓存的nodeStatus，读取出来
-    const nodeStatusList = JSON.parse(localStorage[localStorageKeyName]);
+    const nodeStatusList = JSON.parse(sessionStorage[localStorageKeyName]);
     const nodeIds = Object.keys(nodeStatusList);
     nodeIds.forEach(nodeIdInStorage => {
       if (nodeStatusList[nodeIdInStorage].selected) {

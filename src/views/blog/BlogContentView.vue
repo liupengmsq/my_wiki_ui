@@ -1,15 +1,18 @@
 <template>
   <div class="wrapper">
     <div class="main theme-a">
+      <div>
       <div class="nav_container">
         <div class="nav">
-          <div>
-          左侧边栏内容
-          </div>
-          <div>
-          左侧边栏内容
-          </div>
+          <blog-top-view title="最新文章" typeOfTop="created" />
         </div>
+      </div>
+      <div class="nav_container">
+        <div class="nav">
+          <blog-top-view title="全站最热" typeOfTop="read" />
+        </div>
+      </div>
+
       </div>
 
       <div class="content-container">
@@ -26,8 +29,8 @@
           </div>
         </div>
         <div class="page">
-          <input v-if="hastPreviousPage" type="button" @click="decreasePageNumber" value="上一页">
-          <input v-if="hasNextPage" type="button" @click="increasePageNumber" value="下一页">
+          <a class="pageLink" v-if="hastPreviousPage" @click="decreasePageNumber">上一页</a>
+          <a class="pageLink" v-if="hasNextPage" @click="increasePageNumber">下一页</a>
         </div>
 
       </div>
@@ -41,12 +44,16 @@ import { get } from '../../utils/request';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import { useRouter } from 'vue-router';
+import BlogTopView from './BlogTopView.vue';
 
 export default {
-  name: 'BlogMainView',
+  name: 'BlogContentView',
+  components: {
+    BlogTopView
+  },
   setup() {
     const currentPageNum = ref(0);
-    const pageSize = 5;
+    const pageSize = 4;
     const router = useRouter();
     const hastPreviousPage = ref(false)
     const hasNextPage = ref(false)
@@ -163,6 +170,7 @@ export default {
   padding-top: .1rem;
   padding-bottom: .1rem;
   overflow-x: auto;
+  margin-bottom: .4rem;
 }
 
 .nav {
@@ -221,6 +229,28 @@ export default {
 }
 
 .show-all:hover {
+  background-color: var(--table-row-hover-background-color);
+  color: var(--button-color-hover);
+}
+
+.pageLink {
+  background-color: var(--theme-dropdown-hover-background-color);
+  color: var(--button-color);
+  padding: .05rem;
+  font-size: .15rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.1rem;
+  height: .26rem;
+  text-align: center;
+  user-select: none;
+  width: .8rem;
+  margin-top: 0.2rem;
+  cursor: pointer;
+  margin-right: 0.1rem;
+}
+
+.pageLink:hover {
   background-color: var(--table-row-hover-background-color);
   color: var(--button-color-hover);
 }
