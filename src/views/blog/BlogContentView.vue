@@ -16,23 +16,14 @@
       </div>
 
       <div class="content-container">
-        <div class="content-wrapper" v-for="item in wikiList.list" :key="item.id">
-          <div class="title">{{ item.title }}</div>
-          <div class="info">Last updated: {{ item.updatedTime }} / Reads: {{ item.pageView }}</div>
+        <div class="content-wrapper">
+          <div class="title">{{ wikiData.title }}</div>
+          <div class="info">Last updated: {{ wikiData.updatedTime }} / Reads: {{ wikiData.pageView }}</div>
           <hr>
-          <div class="content close" ref="explainText">
-            <p v-html="item.markdownContent"></p>
-          </div>
-
-          <div class="show-all" @click="goToWikiPage(item)">
-            <span>阅读全文</span>
+          <div id="content" class="content">
+            <p v-html="wikiData.markdownContent"></p>
           </div>
         </div>
-        <div class="page">
-          <a class="pageLink" v-if="hastPreviousPage" @click="decreasePageNumber">上一页</a>
-          <a class="pageLink" v-if="hasNextPage" @click="increasePageNumber">下一页</a>
-        </div>
-
       </div>
     </div>
   </div>
@@ -41,9 +32,9 @@
 <script>
 import { ref, reactive, onMounted } from 'vue';
 import { get } from '../../utils/request';
+import { useRoute } from 'vue-router';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
-import { useRouter } from 'vue-router';
 import BlogTopView from './BlogTopView.vue';
 
 export default {
@@ -52,81 +43,38 @@ export default {
     BlogTopView
   },
   setup() {
-    const currentPageNum = ref(0);
-    const pageSize = 4;
-    const router = useRouter();
-    const hastPreviousPage = ref(false)
-    const hasNextPage = ref(false)
+    const route = useRoute();
+
+    const wikiId = route.params.id;
+    const wikiData = reactive({
+      title: '',
+      markdownContent: '',
+      updatedTime: '',
+      pageView: 0
+    });
 
     onMounted(() => {
       marked.options({
         highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
       })
-      getWikiList();
-      setAllImagesWidth();
+
+      // 从后端API获取当前wiki的内容
+      get(`/api/wiki/${route.params.id}?updateAccessInfo=true`).then(response => {
+        console.log(`Response from "/wiki/${route.params.id}"`, response);
+        wikiData.markdownContent = marked(response.Result.markdownContent);
+        wikiData.title = response.Result.title;
+        wikiData.updatedTime = new Date(response.Result.updatedDateTime).toLocaleString("en-US", {
+          localeMatcher: "best fit",
+        });
+        wikiData.pageView = response.Result.pageViewedNumber;
+      }).catch(error => {
+        console.error(`Error from "/wiki/${route.params.id}"`, error);
+      });
     });
-
-    const setAllImagesWidth = () => {
-      for (var i= document.images.length; i-->0;) {
-        document.images[i].style.width = '30%';
-      }
-    }
-
-    const increasePageNumber = () => {
-      currentPageNum.value = currentPageNum.value + 1;
-      getWikiList();
-    }
-
-    const decreasePageNumber = () => {
-      currentPageNum.value = currentPageNum.value - 1;
-      getWikiList();
-    }
-
-    const wikiList = reactive({
-      list: []
-    });
-
-    const getWikiList = async () => {
-      const response = await get('/api/wiki/pageable', {pageIndex: currentPageNum.value, size: pageSize});
-      console.log(response);
-      if (response.Success) {
-        hasNextPage.value = !response.Result.last;
-        hastPreviousPage.value = !response.Result.first;
-        for (const item of response.Result.content) {
-          item.updatedTime = new Date(item.updatedDateTime).toLocaleString("en-US", {
-            localeMatcher: "best fit",
-          });
-          item.pageView = item.pageViewedNumber;
-          item.target = `/wiki/${item.categoryId}/${item.id}`;
-          item.markdownContent = resizeImages(marked(item.markdownContent));
-        }
-        wikiList.list = response.Result.content;
-        console.log("wikiList.list is updated", wikiList.list);
-      } 
-    }
-
-    const resizeImages = (htmlString) => {
-      var div = document.createElement('div');
-      div.innerHTML = htmlString.trim();
-      for (var i of div.getElementsByTagName('img')) {
-        i.style.width = '20%';
-      }
-      return div.innerHTML;
-    }
-
-    const goToWikiPage = (item) => {
-      sessionStorage.routerSelected = item.categoryId;
-      const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
-      window.open(routeData.href, '_blank');
-    }
 
     return {
-      wikiList,
-      increasePageNumber,
-      decreasePageNumber,
-      goToWikiPage,
-      hasNextPage,
-      hastPreviousPage
+      wikiId,
+      wikiData
     }
   }
 }
@@ -198,65 +146,9 @@ export default {
   overflow: hidden; // 处理图片image撑大父div的情况
 }
 
-.wiki-img {
-  width: 10%;
+.content a > img {
+    width: 100%;
 }
 
-.close {
-  text-overflow: -o-ellipsis-lastline;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 20;
-  line-clamp: 20;
-  -webkit-box-orient: vertical;
-}
-
-.show-all {
-  background-color: var(--theme-dropdown-hover-background-color);
-  color: var(--button-color);
-  padding: .05rem;
-  font-size: .15rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 0.1rem;
-  height: .26rem;
-  text-align: center;
-  user-select: none;
-  width: .8rem;
-  margin-top: 0.2rem;
-  cursor: pointer;
-}
-
-.show-all:hover {
-  background-color: var(--table-row-hover-background-color);
-  color: var(--button-color-hover);
-}
-
-.pageLink {
-  background-color: var(--theme-dropdown-hover-background-color);
-  color: var(--button-color);
-  padding: .05rem;
-  font-size: .15rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 0.1rem;
-  height: .26rem;
-  text-align: center;
-  user-select: none;
-  width: .8rem;
-  margin-top: 0.2rem;
-  cursor: pointer;
-  margin-right: 0.1rem;
-}
-
-.pageLink:hover {
-  background-color: var(--table-row-hover-background-color);
-  color: var(--button-color-hover);
-}
-
-.page {
-  text-align: center;
-}
 </style>
     

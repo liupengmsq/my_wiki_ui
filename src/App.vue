@@ -49,7 +49,7 @@ export default {
     });
 
     const getWikiCategory = async () => {
-      const response = await get('/api/wiki/category');
+      const response = await get('/api/wiki/category/headers');
       console.log(response);
       if (response.Success) {
         categoryList.list = response.Result;

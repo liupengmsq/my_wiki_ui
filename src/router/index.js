@@ -9,6 +9,11 @@ const routes = [
     component: () => import('../views/blog/BlogListView.vue')
   },
   {
+    path: '/blog/:categoryId/:id',
+    name: 'BlogContentView',
+    component: () => import('../views/blog/BlogContentView.vue')
+  },
+  {
     path: '/wiki/:categoryId/:id',
     name: 'wikiMainView',
     component: () => import('../views/wiki/WikiMainView.vue')
@@ -47,7 +52,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   // 当/wiki后面没有id这个query string的时候，默认从后端获取根节点的wiki page ID
-  if((to.name === "wikiMainView" || to.name === "home" || to.name === "wikiManage") && !Object.hasOwn(to.params, "id")){
+  if((to.name === "wikiMainView" || to.name === "wikiManage") && !Object.hasOwn(to.params, "id")){
     try {
       // 获取默认的wiki category的id
       let response = await get('/api/wiki/category/default');
