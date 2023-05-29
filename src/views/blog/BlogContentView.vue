@@ -2,17 +2,16 @@
   <div class="wrapper">
     <div class="main theme-a">
       <div>
-      <div class="nav_container">
-        <div class="nav">
-          <blog-top-view title="最新文章" typeOfTop="created" />
+        <div class="nav_container">
+          <div class="nav">
+            <blog-top-view title="最新文章" typeOfTop="created" />
+          </div>
         </div>
-      </div>
-      <div class="nav_container">
-        <div class="nav">
-          <blog-top-view title="全站最热" typeOfTop="read" />
+        <div class="nav_container">
+          <div class="nav">
+            <blog-top-view title="全站最热" typeOfTop="read" />
+          </div>
         </div>
-      </div>
-
       </div>
 
       <div class="content-container">

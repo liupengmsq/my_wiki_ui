@@ -2,17 +2,16 @@
   <div class="wrapper">
     <div class="main theme-a">
       <div>
-      <div class="nav_container">
-        <div class="nav">
-          <blog-top-view title="最新文章" typeOfTop="created" />
+        <div class="nav_container">
+          <div class="nav">
+            <blog-top-view title="最新文章" typeOfTop="created" />
+          </div>
         </div>
-      </div>
-      <div class="nav_container">
-        <div class="nav">
-          <blog-top-view title="全站最热" typeOfTop="read" />
+        <div class="nav_container">
+          <div class="nav">
+            <blog-top-view title="全站最热" typeOfTop="read" />
+          </div>
         </div>
-      </div>
-
       </div>
 
       <div class="content-container">
@@ -32,7 +31,6 @@
           <a class="pageLink" v-if="hastPreviousPage" @click="decreasePageNumber">上一页</a>
           <a class="pageLink" v-if="hasNextPage" @click="increasePageNumber">下一页</a>
         </div>
-
       </div>
     </div>
   </div>
@@ -41,6 +39,7 @@
 <script>
 import { ref, reactive, onMounted } from 'vue';
 import { get } from '../../utils/request';
+import { isBlogCategoryId } from '../../utils/common';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import { useRouter } from 'vue-router';
@@ -114,9 +113,15 @@ export default {
       return div.innerHTML;
     }
 
-    const goToWikiPage = (item) => {
-      sessionStorage.routerSelected = item.categoryId;
-      const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+    const goToWikiPage = async (item) => {
+      let routeData = null;
+      if(await isBlogCategoryId(item.categoryId)) {
+        sessionStorage.routerSelected = 'main';
+        routeData = router.resolve({path: `/blog/${item.categoryId}/${item.id}`});
+      } else {
+        sessionStorage.routerSelected = item.categoryId;
+        routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+      }
       window.open(routeData.href, '_blank');
     }
 

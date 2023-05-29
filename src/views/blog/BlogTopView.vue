@@ -3,7 +3,7 @@
     <h4 class="title">{{ title }}</h4>
     <ul class="wiki-top-list">
       <template v-for="(item, index) in wikiList.list" :key="item.id">
-        <li><a href="#" @click="goToWikiPage(item)">{{ item.title }}</a> </li>
+        <li><a href="#" @click="goToWikiPage(item)">{{ item.title }}</a></li>
         <hr v-if="index != wikiList.list.length - 1">
       </template>
     </ul>
@@ -14,6 +14,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { get } from '../../utils/request';
 import { useRouter } from 'vue-router';
+import { isBlogCategoryId } from '../../utils/common';
 
 export default {
   name: 'BlogLatestCreatedView',
@@ -42,9 +43,15 @@ export default {
       }
     }
 
-    const goToWikiPage = (item) => {
-      sessionStorage.routerSelected = item.categoryId;
-      const routeData = router.resolve({ path: item.target, query: { hardSelect: true } });
+    const goToWikiPage = async (item) => {
+      let routeData = null;
+      if(await isBlogCategoryId(item.categoryId)) {
+        sessionStorage.routerSelected = 'main';
+        routeData = router.resolve({path: `/blog/${item.categoryId}/${item.id}`});
+      } else {
+        sessionStorage.routerSelected = item.categoryId;
+        routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+      }
       window.open(routeData.href, '_blank');
     }
 

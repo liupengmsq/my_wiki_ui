@@ -25,6 +25,7 @@ import { reactive, toRefs, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { get, deleteAPI, post, put } from '../../utils/request';
 import { marked } from 'marked';
+import { isBlogCategoryId } from '../../utils/common';
 
 export default {
   name: 'WikiSearchResult',
@@ -74,9 +75,15 @@ export default {
       }
     }
 
-    const goToWikiPage = (item) => {
-      sessionStorage.routerSelected = item.categoryId;
-      const routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+    const goToWikiPage = async (item) => {
+      let routeData = null;
+      if(await isBlogCategoryId(item.categoryId)) {
+        sessionStorage.routerSelected = 'main';
+        routeData = router.resolve({path: `/blog/${item.categoryId}/${item.id}`});
+      } else {
+        sessionStorage.routerSelected = item.categoryId;
+        routeData = router.resolve({path: item.target, query: {hardSelect: true} });
+      }
       window.open(routeData.href, '_blank');
     }
 
