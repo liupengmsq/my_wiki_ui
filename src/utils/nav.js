@@ -302,7 +302,7 @@ export const createNavTreeNode = async (parentNodeId, title, url, categoryId, is
   if (!isRoot) {
     postData['parentId'] = parentNodeId
   }
-  const response = await post('/api/nav/tree', postData, {categoryId: categoryId});
+  const response = await post('/api/nav/tree', postData, { categoryId: categoryId});
   console.log('response from post nav', response);
   return response;
 }

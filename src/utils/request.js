@@ -19,12 +19,14 @@ export const get = (url, param = {}) => {
 }
 
 export const post = (url, data = {}, param = {}) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (localStorage.jwtToken) {
+    headers['Authorization'] = `${localStorage.jwtToken}`
+  }
   return new Promise((resolve, reject) => {
-    instance.post(url, data, { params: param }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
+    instance.post(url, data, { params: param, headers: headers }).then((response) => {
       resolve(response.data);
     }, err => {
       console.log('error in post', err);
@@ -34,11 +36,15 @@ export const post = (url, data = {}, param = {}) => {
 }
 
 export const put = (url, data = {}) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (localStorage.jwtToken) {
+    headers['Authorization'] = `${localStorage.jwtToken}`
+  }
   return new Promise((resolve, reject) => {
     instance.put(url, data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: headers
     }).then((response) => {
       resolve(response.data);
     }, err => {
@@ -48,12 +54,17 @@ export const put = (url, data = {}) => {
   });
 }
 
-export const deleteAPI = (url, data = {}) => {
+export const deleteAPI = (url) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (localStorage.jwtToken) {
+    headers['Authorization'] = `${localStorage.jwtToken}`
+  }
+  console.log(headers);
   return new Promise((resolve, reject) => {
-    instance.delete(url, data, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    instance.delete(url, {
+      headers: headers
     }).then((response) => {
       resolve(response.data);
     }, err => {
@@ -64,9 +75,15 @@ export const deleteAPI = (url, data = {}) => {
 }
 
 export const postForm = (url, file) => {
+  const headers = {};
+  if (localStorage.jwtToken) {
+    headers['Authorization'] = `${localStorage.jwtToken}`
+  }
   return new Promise((resolve, reject) => {
     instance.postForm(url, {
       'file': file
+    }, {
+      headers: headers
     }).then((response) => {
       resolve(response.data);
     }, err => {

@@ -29,6 +29,11 @@ const routes = [
     component: () => import('../views/wiki/MarkdownPluginEditorView.vue')
   },
   {
+    path: '/login',
+    name: 'LoginView',
+    component: () => import('../views/login/LoginView.vue')
+  },
+  {
     path: '/manage',
     name: 'wikiManage',
     component: () => import('../views/wiki/WikiManageView.vue')

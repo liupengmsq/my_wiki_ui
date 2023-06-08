@@ -157,6 +157,11 @@ input[type=file] {
   color: var(--input-color);
 }
 
+input[type=password] {
+  background-color: var(--input-background-color);
+  color: var(--input-color);
+}
+
 button {
   cursor: pointer;
 }
