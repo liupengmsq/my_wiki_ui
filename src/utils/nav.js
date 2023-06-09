@@ -2,11 +2,11 @@ import { get, deleteAPI, post, put } from '../utils/request';
 
 // 从后端API与localStorage构造出节点的树结构，并返回根节点
 export const getNavTree = async (categoryId, manageMode=false, wikiId=null) => {
-  // 从后端API "GET /api/nav" 获取导航栏信息
-  const response = await get(`/api/nav/tree`, {categoryId: categoryId});
-  console.log('Get from /api/nav', response);
+  // 从后端API "GET /nav" 获取导航栏信息
+  const response = await get(`/nav/tree`, {categoryId: categoryId});
+  console.log('Get from /nav', response);
   if (!response.Success) {
-    console.error("Error when calling API '/api/nav/tree'!!", response.Errors);
+    console.error("Error when calling API '/nav/tree'!!", response.Errors);
   }
 
   // 从localStorage获取节点展开状态、选中与显示状态的信息
@@ -302,7 +302,7 @@ export const createNavTreeNode = async (parentNodeId, title, url, categoryId, is
   if (!isRoot) {
     postData['parentId'] = parentNodeId
   }
-  const response = await post('/api/nav/tree', postData, { categoryId: categoryId});
+  const response = await post('/nav/tree', postData, { categoryId: categoryId});
   console.log('response from post nav', response);
   return response;
 }
@@ -312,23 +312,23 @@ export const editNavTreeNode = async (nodeId, title, url) => {
     target: url,
     content: title,
   }
-  const response = await put(`/api/nav/tree/${nodeId}`, postData);
+  const response = await put(`/nav/tree/${nodeId}`, postData);
   console.log('response from put nav', response);
   return response;
 }
 
 export const deleteNavTreeNode = async (nodeId) => {
-  return await deleteAPI(`/api/nav/tree/${nodeId}`);
+  return await deleteAPI(`/nav/tree/${nodeId}`);
 }
 
 export const getNavTreeNodeById = async (nodeId) => {
-    const response =  await get(`/api/nav/tree/${nodeId}`);
+    const response =  await get(`/nav/tree/${nodeId}`);
     console.log(response);
     return response;
 }
 
 export const getNavTreeRootNode = async (categoryId) => {
-    const response =  await get(`/api/nav/root`, {categoryId: categoryId});
+    const response =  await get(`/nav/root`, {categoryId: categoryId});
     console.log(response);
     return response;
 }
@@ -355,11 +355,11 @@ export const disableManageMode = () => {
 
 // 通过节点的分类ID与Target（即wiki id）来寻找对应的节点id（如果有多个节点id，返回第一个）
 export const getNodeIdByCategoryIdAndTarget = async (categoryId, target) => {
-  // 从后端API "GET /api/nav" 获取导航栏信息
-  const response = await get(`/api/nav/tree`, {categoryId: categoryId, target: target});
-  console.log('Get from /api/nav', response);
+  // 从后端API "GET /nav" 获取导航栏信息
+  const response = await get(`/nav/tree`, {categoryId: categoryId, target: target});
+  console.log('Get from /nav', response);
   if (!response.Success) {
-    console.error("Error when calling API '/api/nav/tree'!!", response.Errors);
+    console.error("Error when calling API '/nav/tree'!!", response.Errors);
   }
   if (response.Result.length > 0) {
     // 返回API返回的数据中第一个节点的ID

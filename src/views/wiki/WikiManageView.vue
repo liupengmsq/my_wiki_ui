@@ -132,7 +132,7 @@ export default {
 
     // 调用此方法会从后端API获取wiki category的数据，并绑定到categoryList这个响应式对象中，同时HTML dom也会自动更新
     const getWikiCategory = async () => {
-      const response = await get('/api/wiki/category');
+      const response = await get('/wiki/category');
       console.log(response);
       if (response.Success) {
         categoryList.list = response.Result;
@@ -164,7 +164,7 @@ export default {
               "active": isActive,
               "blog": isBlog
             }
-            const response = await post('/api/wiki/category', postData);
+            const response = await post('/wiki/category', postData);
             console.log('response from post category', response);
             return response
           }
@@ -213,7 +213,7 @@ export default {
               "active": isActive,
               "blog": isBlog,
             }
-            const response = await put('/api/wiki/category', postData);
+            const response = await put('/wiki/category', postData);
             console.log('response from post category', response);
             return response
           }
@@ -255,7 +255,7 @@ export default {
           // 点击确认按钮后执行的方法
           onClickOKButton: async function () {
             // 调用后端删除节点API
-            return await deleteAPI('/api/wiki/category/' + categoryId);
+            return await deleteAPI('/wiki/category/' + categoryId);
           }
         })
         console.log('confirm dialog result:', confirmResult);
@@ -290,7 +290,7 @@ export default {
     });
 
     const getWikiList = async () => {
-      const response = await get('/api/wiki');
+      const response = await get('/wiki');
       console.log(response);
       if (response.Success) {
         for (const item of response.Result) {
@@ -326,7 +326,7 @@ export default {
           // 点击确认按钮后执行的方法
           onClickOKButton: async function () {
             // 调用后端删除wiki API
-            return await deleteAPI('/api/wiki/' + wikiId);
+            return await deleteAPI('/wiki/' + wikiId);
           }
         })
         console.log('confirm dialog result:', confirmResult);

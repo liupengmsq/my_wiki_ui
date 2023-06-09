@@ -45,7 +45,7 @@ export default {
         return;
       }
 
-      const response = await post('/api/user/login', {
+      const response = await post('/user/login', {
         'userName': username.value,
         'password': password.value
       })

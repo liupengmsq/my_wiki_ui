@@ -58,7 +58,7 @@ export default {
       })
 
       // 从后端API获取当前wiki的内容
-      get(`/api/wiki/${route.params.id}?updateAccessInfo=true`).then(response => {
+      get(`/wiki/${route.params.id}?updateAccessInfo=true`).then(response => {
         console.log(`Response from "/wiki/${route.params.id}"`, response);
         wikiData.markdownContent = marked(response.Result.markdownContent);
         wikiData.title = response.Result.title;

@@ -52,7 +52,7 @@ export default {
       if (!searchText.value) {
         return;
       }
-      const response = await get('/api/wiki/search', { searchText: searchText.value });
+      const response = await get('/wiki/search', { searchText: searchText.value });
       console.log(response);
       if (response.Success) {
         for (const item of response.Result) {

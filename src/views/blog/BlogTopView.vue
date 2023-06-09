@@ -33,7 +33,7 @@ export default {
     });
 
     const getWikiList = async () => {
-      const response = await get('/api/wiki/top/' + props.typeOfTop);
+      const response = await get('/wiki/top/' + props.typeOfTop);
       console.log(response);
       if (response.Success) {
         for (const item of response.Result) {

@@ -98,17 +98,17 @@ export default {
     // 调用后端API获取wiki category信息
     const getWikiCategories = async () => {
       try {
-        const response = await get('/api/wiki/category');
+        const response = await get('/wiki/category');
         if (response.Success) {
           selectedWikiCategoryItem.value = response.Result[0].categoryName
           for (const c of response.Result) {
             wikiCategoryList.list.push(c.categoryName);
           }
         } else {
-          console.error('Error when GET for /api/wiki/category', response);
+          console.error('Error when GET for /wiki/category', response);
         }
       } catch (error) {
-        console.error('Error when GET for /api/wiki/category', error);
+        console.error('Error when GET for /wiki/category', error);
       }
     }
 
@@ -120,7 +120,7 @@ export default {
     const getWiki = async (id) => {
       try {
         wikiId = id;
-        const response = await get('/api/wiki/' + id);
+        const response = await get('/wiki/' + id);
         if (response.Success) {
           markdown.value = response?.Result?.markdownContent;
           wikiTitle.value = response?.Result?.title;
@@ -128,10 +128,10 @@ export default {
           pageViewedNumber = response?.Result?.pageViewedNumber;
           accessDateTime = response?.Result?.accessDateTime;
         } else {
-          console.error('Error when GET for /api/wiki/' + id, response);
+          console.error('Error when GET for /wiki/' + id, response);
         }
       } catch (error) {
-        console.error('Error when GET for /api/wiki/' + id, error);
+        console.error('Error when GET for /wiki/' + id, error);
       }
     }
 
@@ -201,11 +201,11 @@ export default {
       try {
         let response = null;
         if (imageFileNameForSearch === '') {
-          response = await get('/api/wiki/image');
+          response = await get('/wiki/image');
         } else {
-          response = await get('/api/wiki/image', {fileName: imageFileNameForSearch});
+          response = await get('/wiki/image', {fileName: imageFileNameForSearch});
         }
-        console.log('GET /api/wiki/image', response);
+        console.log('GET /wiki/image', response);
         if (response.Success) {
           // 转换api返回的UTC时间为本地浏览器时间
           const imageList = [];
@@ -227,10 +227,10 @@ export default {
           );
           imageData.list = imageList;
         } else {
-          console.error('Error when GET for /api/wiki/image', response);
+          console.error('Error when GET for /wiki/image', response);
         }
       } catch (error) {
-        console.error('Error when GET for /api/wiki/image', error);
+        console.error('Error when GET for /wiki/image', error);
       }
     }
 
@@ -238,15 +238,15 @@ export default {
     const deleteImage = async (fileName) => {
       console.log('Image file name to be deleted:', fileName);
       try {
-        const response = await deleteAPI('/api/wiki/image/' + fileName);
+        const response = await deleteAPI('/wiki/image/' + fileName);
         if (response.Success) {
           // refresh image list after deletion
           getImageList(fileNameForSearch.value);
         } else {
-          console.error('Error when Delete for /api/wiki/image', response);
+          console.error('Error when Delete for /wiki/image', response);
         }
       } catch (error) {
-        console.error('Error when Delete for /api/wiki/image', error);
+        console.error('Error when Delete for /wiki/image', error);
       }
     }
 
@@ -266,7 +266,7 @@ export default {
           console.log('After rename', fileUploadEle);
         }
         try {
-          const response = await postForm('/api/wiki/image', fileUploadEle);
+          const response = await postForm('/wiki/image', fileUploadEle);
           if (response.Success) {
             console.log('Response from upload image', response);
           } else {
@@ -444,9 +444,9 @@ export default {
       try {
         let response = null;
         if (forEdit) {
-          response = await put('/api/wiki', postData);
+          response = await put('/wiki', postData);
         } else {
-          response = await post('/api/wiki', postData);
+          response = await post('/wiki', postData);
         }
         // 创建成功
         if (response.Success) {

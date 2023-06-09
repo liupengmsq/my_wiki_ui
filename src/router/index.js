@@ -63,7 +63,7 @@ router.beforeEach(async (to, from) => {
     if (localStorage.jwtToken) {
       headers['Authorization'] = `${localStorage.jwtToken}`
     }
-    const resposne = await get('/api/hasAuthenticated', {}, headers)
+    const resposne = await get('/hasAuthenticated', {}, headers)
     if (!resposne.Success) {
       alert(resposne.Errors);
       return false;
@@ -74,9 +74,9 @@ router.beforeEach(async (to, from) => {
   if((to.name === "wikiMainView" || to.name === "wikiManage") && !Object.hasOwn(to.params, "id")){
     try {
       // 获取默认的wiki category的id
-      let response = await get('/api/wiki/category/default');
+      let response = await get('/wiki/category/default');
       if (!response.Success) {
-        console.error("Error when calling API '/api/wiki/category/default'!!", response.Errors);
+        console.error("Error when calling API '/wiki/category/default'!!", response.Errors);
       }
       const defaultCategoryId = response.Result.id
       console.log('默认的wiki分类的id为: ', defaultCategoryId);

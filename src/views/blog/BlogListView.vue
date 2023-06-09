@@ -86,7 +86,7 @@ export default {
     });
 
     const getWikiList = async () => {
-      const response = await get('/api/wiki/pageable', {pageIndex: currentPageNum.value, size: pageSize});
+      const response = await get('/wiki/pageable', {pageIndex: currentPageNum.value, size: pageSize});
       console.log(response);
       if (response.Success) {
         hasNextPage.value = !response.Result.last;
