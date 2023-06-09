@@ -5,10 +5,9 @@ const instance = axios.create({
   timeout: 10000
 });
 
-export const get = (url, param = {}) => {
-  console.log(param);
+export const get = (url, param = {}, headers = {}) => {
   return new Promise((resolve, reject) => {
-    instance.get(url, { params: param }, {
+    instance.get(url, { params: param, headers: headers }, {
     }).then((response) => {
       resolve(response.data);
     }, err => {

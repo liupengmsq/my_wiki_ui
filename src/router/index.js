@@ -56,6 +56,20 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
+  if (to.name === "wikiManage") {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (localStorage.jwtToken) {
+      headers['Authorization'] = `${localStorage.jwtToken}`
+    }
+    const resposne = await get('/api/hasAuthenticated', {}, headers)
+    if (!resposne.Success) {
+      alert(resposne.Errors);
+      return false;
+    }
+  }
+  
   // 当/wiki后面没有id这个query string的时候，默认从后端获取根节点的wiki page ID
   if((to.name === "wikiMainView" || to.name === "wikiManage") && !Object.hasOwn(to.params, "id")){
     try {
