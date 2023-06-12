@@ -16,8 +16,8 @@
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
         <div>文件名: {{ imgItem.fileName }}</div>
         <div>上传时间: {{ imgItem.uploadLocalTime }}</div>
-        <a :href="'http://imgs.pengliu.me:8080/' + imgItem.fileName" target="_blank">
-          <img id="drag1" draggable="true" @dragstart="drag" :src="'http://imgs.pengliu.me:8080/' + imgItem.fileName">
+        <a :href="import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName" target="_blank">
+          <img id="drag1" draggable="true" @dragstart="drag" :src="import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName">
         </a>
         <input type="button" value="删除" @click="deleteImage(imgItem.fileName)">
       </div>
