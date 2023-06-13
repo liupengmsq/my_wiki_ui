@@ -16,8 +16,8 @@
       <div class="image_item" v-for="imgItem in imageData.list" :key="imgItem.id">
         <div>文件名: {{ imgItem.fileName }}</div>
         <div>上传时间: {{ imgItem.uploadLocalTime }}</div>
-        <a :href="import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName" target="_blank">
-          <img id="drag1" draggable="true" @dragstart="drag" :src="import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName">
+        <a :href="imgItem.fullURL" target="_blank">
+          <img id="drag1" draggable="true" @dragstart="drag" :src="imgItem.fullURL">
         </a>
         <input type="button" value="删除" @click="deleteImage(imgItem.fileName)">
       </div>
@@ -212,6 +212,7 @@ export default {
           for (const imageItemInResponse of response.Result) {
             const imageItem = {};
             imageItem.fileName = imageItemInResponse.fileName;
+            imageItem.fullURL = import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName 
             imageItem.uploadLocalTime = new Date(imageItemInResponse.uploadTime).toLocaleString("en-US", {
               localeMatcher: "best fit",
               timeZoneName: "short"
