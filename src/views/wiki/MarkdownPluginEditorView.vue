@@ -212,7 +212,7 @@ export default {
           for (const imageItemInResponse of response.Result) {
             const imageItem = {};
             imageItem.fileName = imageItemInResponse.fileName;
-            imageItem.fullURL = import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imgItem.fileName 
+            imageItem.fullURL = import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imageItem.fileName 
             imageItem.uploadLocalTime = new Date(imageItemInResponse.uploadTime).toLocaleString("en-US", {
               localeMatcher: "best fit",
               timeZoneName: "short"
