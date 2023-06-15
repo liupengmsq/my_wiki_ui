@@ -31,7 +31,13 @@ export default {
     onMounted(() => {
       console.log('route.params.id', route.params.id);
       marked.options({
-        highlight: (code, lang) => hljs.highlight(code, { language: lang }).value,
+        highlight: (code, lang) => {
+          if (hljs.getLanguage(lang)) {
+            return hljs.highlight(code, { language: lang }).value;
+          } else {
+            return hljs.highlightAuto(code).value;
+          }
+        } 
       })
 
       // 从后端API获取当前wiki的内容
