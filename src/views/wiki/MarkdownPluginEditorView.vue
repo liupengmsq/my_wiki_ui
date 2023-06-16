@@ -21,6 +21,10 @@
         </a>
         <input type="button" value="删除" @click="deleteImage(imgItem.fileName)">
       </div>
+      <div class="page">
+        <a class="pageLink" v-if="hastPreviousPage" @click="decreasePageNumber">上一页</a>
+        <a class="pageLink" v-if="hasNextPage" @click="increasePageNumber">下一页</a>
+      </div>
     </div>
     <div class="resizer" data-direction="horizontal"></div>
     <div class="container__right" @drop="drop" @dragover="allowDrop">
@@ -73,6 +77,12 @@ export default {
   },
 
   setup() {
+
+    // 分页相关
+    const currentPageNum = ref(0);
+    const pageSize = 10;
+    const hastPreviousPage = ref(false)
+    const hasNextPage = ref(false)
     // markdown解析
     const markdown = ref("");
 
@@ -86,6 +96,17 @@ export default {
     });
 
     const titleTextbox = ref(null);
+
+    const increasePageNumber = () => {
+      currentPageNum.value = currentPageNum.value + 1;
+      getImageList(fileNameForSearch.value);
+    }
+
+    const decreasePageNumber = () => {
+      currentPageNum.value = currentPageNum.value - 1;
+      getImageList(fileNameForSearch.value);
+    }
+
 
     // 显示信息
     const info = ref("");
@@ -201,15 +222,18 @@ export default {
       try {
         let response = null;
         if (imageFileNameForSearch === '') {
-          response = await get('/wiki/image');
+          response = await get('/wiki/image/pageable', {pageIndex: currentPageNum.value, size: pageSize});
         } else {
-          response = await get('/wiki/image', {fileName: imageFileNameForSearch});
+          response = await get('/wiki/image/pageable', {pageIndex: currentPageNum.value, size: pageSize, fileName: imageFileNameForSearch});
         }
         console.log('GET /wiki/image', response);
         if (response.Success) {
+          hasNextPage.value = !response.Result.last;
+          hastPreviousPage.value = !response.Result.first;
+
           // 转换api返回的UTC时间为本地浏览器时间
           const imageList = [];
-          for (const imageItemInResponse of response.Result) {
+          for (const imageItemInResponse of response.Result.content) {
             const imageItem = {};
             imageItem.fileName = imageItemInResponse.fileName;
             imageItem.fullURL = import.meta.env.VITE_BACKEND_IMG_SERVER_NAME + imageItem.fileName 
@@ -292,6 +316,7 @@ export default {
     }
 
     const searchImageFileName = () => {
+      currentPageNum.value = 0;
       getImageList(fileNameForSearch.value)
     }
 
@@ -504,7 +529,13 @@ export default {
       wikiCategoryList,
       selectedWikiCategoryItem,
       saveWiki,
-      messageDialog
+      messageDialog,
+
+      //分页相关
+      increasePageNumber,
+      decreasePageNumber,
+      hasNextPage,
+      hastPreviousPage
     }
   }
 }
