@@ -13,7 +13,8 @@
         </div>
         <div class="search-item" v-for="item in wikiSearchResultList.list" :key="item.id">
           <div class="search-title" @click="goToWikiPage(item)" v-html="highlightSearchResult(item.search, item.title, true)"></div>
-          <div v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div>
+          <!-- <div v-html="highlightSearchResult(item.search, item.markdownContentPureText)"></div> -->
+          <div><span @click="goToWikiPage(item)" class="search-result">{{ item.markdownContent }}</span></div>
         </div>
       </div>
     </div>
@@ -202,6 +203,17 @@ export default {
 .search-title {
   font-weight: 500;
   cursor: pointer;
+}
+
+.search-result {
+  cursor: pointer;
+  text-overflow: -o-ellipsis-lastline;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  -webkit-box-orient: vertical;
 }
 </style>
     
