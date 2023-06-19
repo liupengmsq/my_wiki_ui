@@ -323,7 +323,7 @@ export default {
   font-size: .16rem;
   line-height: .26rem;
   padding: 0 .2rem 0 .2rem;
-  width: 3.16rem;
+  width: 3rem;
   box-sizing: border-box;
   user-select: none;
 }

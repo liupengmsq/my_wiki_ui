@@ -129,7 +129,7 @@ export default {
 }
 
 .main {
-  max-width: 17.6rem;
+  max-width: 12rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
