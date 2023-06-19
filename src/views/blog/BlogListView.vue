@@ -173,7 +173,7 @@ export default {
 }
 
 .nav_container {
-  width: 4rem;
+  width: 3rem;
   min-width: 2rem;
   background-color: var(--nav-container-background-color);
   // border-right: .01rem solid #dddddd;
@@ -193,7 +193,7 @@ export default {
 }
 
 .content-container {
-  width: 14.23rem;
+  width: 8.87rem;
 }
 
 .content-wrapper {
