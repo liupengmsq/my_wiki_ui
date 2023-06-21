@@ -22,7 +22,7 @@
 
   <div class="footer-nav-container">
     <div class="footer-nav">
-      <span class="footer-nav-left"><a class="footer-link" href="/">刘鹏的网络日志</a> Copyright © 2023</span>
+      <span class="footer-nav-left"><a class="footer-link" href="/">刘鹏的网络日志</a> Copyright © 2023 All Rights Reserved</span>
       <span class="footer-nav-right">
         <ul>
           <li><a class="footer-link" href="/login">登陆</a></li>
