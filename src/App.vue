@@ -19,6 +19,18 @@
   </div>
   <!-- router-view 设置:key为当前的url，这样每当url有变化的时候，都会重新加载router对应的component -->
   <router-view :key="$route.fullPath"></router-view>
+
+  <div class="footer-nav-container">
+    <div class="footer-nav">
+      <span class="footer-nav-left"><a class="footer-link" href="/">刘鹏的网络日志</a> Copyright © 2023</span>
+      <span class="footer-nav-right">
+        <ul>
+          <li><a class="footer-link" href="/login">登陆</a></li>
+          <li><a class="footer-link" href="/manage">管理</a></li>
+        </ul>
+      </span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -282,4 +294,44 @@ a:hover {
   background-color: var(--input-background-color);
   color: var(--input-color);
 }
+
+.footer-nav-container {
+  width: 100%;
+  padding-left: auto;
+  padding-right: auto;
+  padding-top: .15rem;
+  padding-bottom: .15rem;
+}
+
+.footer-nav {
+  display: flex;
+  align-items: center;
+  max-width: 12rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-nav-left {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: small;
+}
+
+ .footer-link {
+  color: var(--nav-selected-background-color);
+  font-weight: 800;
+  font-size: small;
+}
+
+.footer-nav-right {
+  margin-left: auto;
+}
+
+ul li{
+  display: inline;
+  margin-right: .2rem;
+}
+
+
 </style>
