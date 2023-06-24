@@ -26,6 +26,7 @@
       </div>
     </div>
   </div>
+  <GoToTopButton />
 </template>
     
 <script>
@@ -35,11 +36,13 @@ import { useRoute } from 'vue-router';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 import BlogTopView from './BlogTopView.vue';
+import GoToTopButton from '../../components/GoToTopButton.vue';
 
 export default {
   name: 'BlogContentView',
   components: {
-    BlogTopView
+    BlogTopView,
+    GoToTopButton
   },
   setup() {
     const route = useRoute();

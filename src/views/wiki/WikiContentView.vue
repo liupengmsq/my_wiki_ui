@@ -5,17 +5,23 @@
     <hr>
     <p v-html="wikiData.markdownContent"></p>
   </div>
+
+  <GoToTopButton />
 </template>
     
 <script>
 import { useRoute } from 'vue-router';
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { get } from '../../utils/request';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
+import GoToTopButton from '../../components/GoToTopButton.vue';
 
 export default {
   name: 'WikiContentView',
+  components: {
+    GoToTopButton
+  },
   setup() {
     const route = useRoute();
 
@@ -29,6 +35,7 @@ export default {
     });
 
     onMounted(() => {
+
       console.log('route.params.id', route.params.id);
       marked.options({
         highlight: (code, lang) => {
@@ -75,6 +82,5 @@ export default {
   font-size: .18rem;
   margin: 0 0 .15rem 0;
 }
-
 </style>
     
