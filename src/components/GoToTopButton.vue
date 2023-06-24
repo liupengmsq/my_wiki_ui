@@ -62,8 +62,8 @@ export default {
   text-align: center;
 
   position: fixed;
-  right: 262px;
-  bottom: 108px;
+  right: 18px;
+  bottom: 6px;
   height: 43px;
   width: 43px;
   background-color: rgb(255, 255, 255);
