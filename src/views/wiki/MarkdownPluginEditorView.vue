@@ -205,7 +205,7 @@ export default {
         const imageTitle = selected || '';
         const content = `
 <a href="${imageURL}" target="_blank"/>
-  <img src="${imageURL}" title="${imageTitle}">
+  <img src="${imageURL}" title="${imageTitle}" style="width:50%">
 </a>
 `
         return {
