@@ -66,12 +66,13 @@ export default {
   bottom: 6px;
   height: 43px;
   width: 43px;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--go-to-top-bar-background-color);
   border-radius: 20%;
   overflow: hidden;
   z-index: 2;
 
-  color: rgb(133, 144, 166);
+  color: var(--go-to-top-bar-color);
+  box-shadow: var(--go-to-top-bar-box-shadow);
   cursor: pointer;
 }
 </style>

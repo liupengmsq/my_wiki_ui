@@ -30,6 +30,9 @@
   --table-header-background-color: #e4e3e3;
   --table-row-nth-event-background-color: #f2f2f2;
   --table-row-hover-background-color: #00a8e6;
+  --go-to-top-bar-background-color: rgb(255, 255, 255);
+  --go-to-top-bar-color: rgb(133, 144, 166);
+  --go-to-top-bar-box-shadow: rgba(18, 18, 18, 0.1) 0px 1px 3px;
 }
 
 /* automatic dark mode */
@@ -66,6 +69,9 @@
     --table-header-background-color: #333333;
     --table-row-nth-event-background-color: #272727;
     --table-row-hover-background-color: rgb(0, 127, 175);
+    --go-to-top-bar-background-color: rgb(255, 255, 255);
+    --go-to-top-bar-color: rgb(133, 144, 166);
+    --go-to-top-bar-box-shadow: rgba(18, 18, 18, 0.1) 0px 1px 3px;
   }
 }
 
@@ -102,6 +108,9 @@
   --table-header-background-color: #333333;
   --table-row-nth-event-background-color: #272727;
   --table-row-hover-background-color: rgb(0, 127, 175);
+  --go-to-top-bar-background-color: rgb(23, 25, 26);
+  --go-to-top-bar-color: rgb(157, 150, 139);
+  --go-to-top-bar-box-shadow: rgba(13, 14, 14, 0.1) 0px 1px 3px;
 }
 
 html {
