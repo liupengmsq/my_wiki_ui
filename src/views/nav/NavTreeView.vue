@@ -318,12 +318,13 @@ export default {
   padding-top: .1rem;
   padding-bottom: .1rem;
   overflow-x: auto;
+  min-width: 2.5rem;
+  max-width: 3rem;
 }
 .nav {
   font-size: .16rem;
   line-height: .26rem;
   padding: 0 .2rem 0 .2rem;
-  width: 3rem;
   box-sizing: border-box;
   user-select: none;
 }

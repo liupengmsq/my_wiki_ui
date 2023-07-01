@@ -190,6 +190,7 @@ button {
 // 代码的背景色
 pre {
   background-color: var(--pre-background-color);
+  overflow-x: auto;
 }
 
 // markdown editor的背景色
